@@ -1,0 +1,5 @@
+texinfo-doc-nonfree (4.8-1) unstable; urgency=low
+
+  * First version of the split out documentation package of texinfo and info.
+
+ -- Norbert Preining <preining@logic.at>  Tue, 11 Apr 2006 14:43:36 +0200

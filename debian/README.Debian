@@ -1,0 +1,7 @@
+README for texinfo-doc-nonfree
+==============================
+
+This package contains the non-free documentation for the texinfo and info
+packages. This documentation is licensed under GFDL with Cover Texts, which
+is considered non-free under the Debian Free Software Guidelines.
+

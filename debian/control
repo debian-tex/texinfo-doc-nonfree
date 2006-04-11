@@ -1,0 +1,18 @@
+Source: texinfo-doc-nonfree
+Section: non-free/doc
+Priority: optional
+Maintainer: Norbert Preining <preining@logic.at>
+Build-Depends: debhelper (>= 5), texinfo (>= 4.8)
+Standards-Version: 3.6.2.1
+
+Package: texinfo-doc-nonfree
+Section: non-free/doc
+Priority: optional
+Architecture: all
+Recommends: info
+Conflicts: texinfo (<= 4.8-8), info (<= 4.8-8)
+Replaces: texinfo (<= 4.8-8), info (<= 4.8-8)
+Description: texinfo and info documentation that is non-free
+ This package provides documentation in info and html format for the
+ texinfo and info packages. See the respective packages for more
+ explanation.
