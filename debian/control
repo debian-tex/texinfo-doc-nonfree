@@ -2,7 +2,8 @@ Source: texinfo-doc-nonfree
 Section: non-free/doc
 Priority: optional
 Maintainer: Norbert Preining <preining@logic.at>
-Build-Depends: debhelper (>= 5), texinfo (>= 4.8)
+Build-Depends: debhelper (>= 5)
+Build-Depends-Indep: texinfo (>= 4.8)
 Standards-Version: 3.6.2.1
 
 Package: texinfo-doc-nonfree
