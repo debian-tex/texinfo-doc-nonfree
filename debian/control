@@ -7,8 +7,6 @@ Build-Depends-Indep: texinfo (>= 4.8)
 Standards-Version: 3.6.2.1
 
 Package: texinfo-doc-nonfree
-Section: non-free/doc
-Priority: optional
 Architecture: all
 Recommends: info
 Conflicts: texinfo (<= 4.8-8), info (<= 4.8-8)
