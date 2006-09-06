@@ -1,7 +1,7 @@
 Source: texinfo-doc-nonfree
 Section: non-free/doc
 Priority: optional
-Maintainer: Norbert Preining <preining@logic.at>
+Maintainer: Norbert Preining <preining@debian.org>
 Build-Depends: debhelper (>= 5)
 Build-Depends-Indep: texinfo (>= 4.8)
 Standards-Version: 3.6.2.1

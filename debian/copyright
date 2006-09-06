@@ -1,10 +1,10 @@
-This package has been created by Norbert Preining <preining@logic.at>.
+This package has been created by Norbert Preining <preining@debian.org>.
 It contains non-free, but distributable documentation files for texinfo
 and info.
 
 The Debian packaging (if copyrightable at all) is
 
-Copyright Norbert Preining <preining@logic.at> 2006
+Copyright Norbert Preining <preining@debian.org> 2006
 
 The original source can be found at: http://ftp.gnu.org/gnu/texinfo/
 
