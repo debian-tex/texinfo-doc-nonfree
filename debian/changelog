@@ -1,3 +1,9 @@
+texinfo-doc-nonfree (4.13a-1) unstable; urgency=low
+
+  * new upstream releases
+
+ -- Norbert Preining <preining@debian.org>  Mon, 09 Mar 2009 15:08:18 +0100
+
 texinfo-doc-nonfree (4.11-1) unstable; urgency=low
 
   * change maintainer email to debian-tex-maint@lists.debian.org, add myself
