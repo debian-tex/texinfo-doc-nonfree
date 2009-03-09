@@ -5,7 +5,7 @@ Maintainer: Debian TeX maintainers <debian-tex-maint@lists.debian.org>
 Uploaders: Norbert Preining <preining@debian.org>
 Build-Depends: debhelper (>= 5)
 Build-Depends-Indep: texinfo (>= 4.11)
-Standards-Version: 3.7.2
+Standards-Version: 3.8.0
 
 Package: texinfo-doc-nonfree
 Architecture: all
