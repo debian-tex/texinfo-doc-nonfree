@@ -1,5 +1,5 @@
 \input texinfo.tex    @c -*-texinfo-*-
-@c $Id: texinfo.txi,v 1.490 2012/11/13 18:59:43 karl Exp $
+@c $Id: texinfo.txi,v 1.496 2012/11/26 18:52:10 karl Exp $
 @c Ordinarily, Texinfo files have the extension .texi.  But texinfo.texi
 @c clashes with texinfo.tex on 8.3 filesystems, so we use texinfo.txi.
 
@@ -470,9 +470,9 @@ Special Characters: Inserting @@ @{@} , \ #
 
 Inserting Space
 
+* Multiple Spaces::             Inserting multiple spaces.
 * Not Ending a Sentence::       Sometimes a . doesn't end a sentence.
 * Ending a Sentence::           Sometimes it does.
-* Multiple Spaces::             Inserting multiple spaces.
 * frenchspacing::               Specifying end-of-sentence spacing.
 * dmn::                         How to format a dimension.
 
@@ -814,8 +814,8 @@ as, the pronunciation of @TeX{}.  In the word @TeX{}, the @samp{X} is
 actually the Greek letter ``chi'' rather than the English letter
 ``ex''.  Pronounce @TeX{} as if the @samp{X} were the last sound in
 the name `Bach'; but pronounce Texinfo as if the @samp{x} were a `k'.
-Spell ``Texinfo'' with a capital ``T'' and the other letters in lower
-case.
+Spell ``Texinfo'' with a capital ``T'' and the other letters in
+lowercase.
 
 Manuals for most GNU packages are written in Texinfo, and available
 online at @url{http://www.gnu.org/doc}.  The Texinfo 
@@ -1241,8 +1241,8 @@ In a Texinfo file, the commands you write to describe the contents of
 the manual are preceded by an @samp{@@} character; they are called
 @dfn{@@-commands}.  For example, @code{@@node} is the command to
 indicate a node and @code{@@chapter} is the command to indicate the
-start of a chapter.  Almost all @@ command names are entirely lower
-case.
+start of a chapter.  Almost all @@ command names are entirely
+lowercase.
 
 Texinfo's @@-commands are a strictly limited set of constructs.  The
 strict limits are primarily intended to ``force'' you, the author, to
@@ -3802,14 +3802,14 @@ The second part contains nodes for the indices.
 @item
 @findex detailmenu
 @cindex Detailed menu
-The third and subsequent parts contain a listing of the other, lower
-level nodes, often ordered by chapter.  This way, rather than go
+The third and subsequent parts contain a listing of the other,
+lower-level nodes, often ordered by chapter.  This way, rather than go
 through an intermediary menu, an inquirer can go directly to a
 particular node when searching for specific information.  These menu
-items are not required; add them if you think they are a
-convenience.  If you do use them, put @code{@@detailmenu} before the
-first one, and @code{@@end detailmenu} after the last; otherwise,
-@code{makeinfo} will get confused.
+items are not required; add them if you think they are a convenience.
+If you do use them, put @code{@@detailmenu} before the first one, and
+@code{@@end detailmenu} after the last; otherwise, @code{makeinfo}
+will get confused.
 @end itemize
 
 Each section in the menu can be introduced by a descriptive line.  So
@@ -5249,24 +5249,38 @@ it is never lowered and nothing can be raised to it
 @cindex Creating pointers with @code{makeinfo}
 @cindex Pointer creation with @code{makeinfo}
 @cindex Automatic pointer creation with @code{makeinfo}
+@cindex Implicit pointer creation with @code{makeinfo}
 
-The @code{makeinfo} program has a feature for automatically
-determining node pointers for a hierarchically organized document.  We
-highly recommend using it.
+The @code{makeinfo} program can automatically determine node pointers
+for a hierarchically organized document.  This implicit node pointer
+creation feature in @code{makeinfo} relieves you from the need to
+update menus and pointers manually or with Texinfo mode commands.
+(@xref{Updating Nodes and Menus}.)  We highly recommend taking
+advantage of this.
 
-When you take advantage of this feature, you do not need to write the
-`Next', `Previous', and `Up' pointers after the name of a node.
-However, you must write a sectioning command, such as @code{@@chapter}
+To do so, write your @code{@@node} lines with just the name of the
+node:
+
+@example
+@@node My Node
+@end example
+
+@noindent
+You do not need to write out the `Next', `Previous', and `Up'
+pointers.
+
+Then, you must write a sectioning command, such as @code{@@chapter}
 or @code{@@section}, on the line immediately following each truncated
-@code{@@node} line (except that comment lines may intervene).
+@code{@@node} line (except that comment lines may intervene).  This is
+where it normally goes.
 
-In addition, you must follow the `Top' @code{@@node} line with a line
-beginning with @code{@@top} to mark the top-level node in the
-file.  @xref{top command,, The @code{@@top} Sectioning Command}.
+Also, you must write the name of each node (except for the `Top' node)
+in a menu that is one or more hierarchical levels above the node's
+level.
 
-Finally, you must write the name of each node (except for the `Top'
-node) in a menu that is one or more hierarchical levels above the
-node's hierarchical level.
+Finally, you must follow the `Top' @code{@@node} line with a line
+beginning with @code{@@top} to mark the top-level node in the file.
+@xref{top command,, The @code{@@top} Sectioning Command}.
 
 @cindex Detail menu
 @findex detailmenu
@@ -5275,15 +5289,12 @@ Parts}), mark it with the @code{@@detailmenu @dots{} @@end
 detailmenu} environment, or @command{makeinfo} will get confused,
 typically about the last and/or first node in the document.
 
-This implicit node pointer creation feature in @code{makeinfo}
-relieves you from the need to update menus and pointers manually or
-with Texinfo mode commands.  (@xref{Updating Nodes and Menus}.)
-
 In most cases, you will want to take advantage of this feature and not
-redundantly specify node pointers.  However, Texinfo documents are not
-required to be organized hierarchically or in fact to contain
-sectioning commands at all (for example, if you never intend the
-document to be printed).  
+redundantly specify node pointers that the programs can determine.
+However, Texinfo documents are not required to be organized
+hierarchically or in fact to contain sectioning commands at all (for
+example, if you never intend the document to be printed), so node
+pointers may still be specified explicitly, in full generality.
 
 
 @node anchor
@@ -5850,8 +5861,8 @@ the reference in the printed manual and in HTML without the preceding
 
 @item @@pxref
 Used within parentheses, at the end of a sentence, or otherwise before
-punctuation, to make a reference.  Its output starts with a lower case
-`see' in the printed manual and in HTML, and a lower case @samp{*note}
+punctuation, to make a reference.  Its output starts with a lowercase
+`see' in the printed manual and in HTML, and a lowercase @samp{*note}
 in Info.  (@samp{p} is for `parenthesis'.)
 
 @item @@inforef
@@ -6205,7 +6216,7 @@ comma, and then by the clause, which is followed by a period.)
 A third argument replaces the node name in the @TeX{} output.  The third
 argument should be the name of the section in the printed output, or
 else state the topic discussed by that section.  Often, you will want to
-use initial upper case letters so it will be easier to read when the
+use initial uppercase letters so it will be easier to read when the
 reference is printed.  Use a third argument when the node name is
 unsuitable because of syntax or meaning.
 
@@ -6584,8 +6595,8 @@ in two ways:
 
 @enumerate
 @item
-@TeX{} typesets the reference for the printed manual with a lower case
-`see' rather than an upper case `See'.
+@TeX{} typesets the reference for the printed manual with a lowercase
+`see' rather than an uppercase `See'.
 
 @item
 The Info formatting commands automatically end the reference with a
@@ -7073,7 +7084,7 @@ different from the identifier @code{printf}, and most likely is a
 misspelling of it.  Even in languages which are not case sensitive, it
 is confusing to a human reader to see identifiers spelled in different
 ways.  Pick one spelling and always use that.  If you do not want to
-start a sentence with a command name written all in lower case, you
+start a sentence with a command name written all in lowercase, you
 should rearrange the sentence.
 
 In the Info output, @code{@@code} results in single quotation marks
@@ -7407,7 +7418,7 @@ Do not use @code{@@var} for environment variables either; @code{@@env}
 is correct for them (see the next section).
 
 The effect of @code{@@var} in the Info file is to change the case of
-the argument to all upper case.  In the printed manual and HTML
+the argument to all uppercase.  In the printed manual and HTML
 output, the argument is output in slanted type.
 
 @need 700
@@ -7429,7 +7440,7 @@ To delete file @var{filename}, type @samp{rm @var{filename}}.
 (Note that @code{@@var} may appear inside @code{@@code},
 @code{@@samp}, @code{@@file}, etc.)
 
-Write a metasyntactic variable all in lower case without spaces, and
+Write a metasyntactic variable all in lowercase without spaces, and
 use hyphens to make it more readable.  Thus, the Texinfo source for
 the illustration of how to begin a Texinfo manual looks like
 this:
@@ -7842,7 +7853,7 @@ there.
 
 Use the @samp{@@sc} command to set text in @sc{a small caps font}
 (where possible).  Write the text you want to be in small caps between
-braces in lower case, like this:
+braces in lowercase, like this:
 
 @example
 Richard @@sc@{Stallman@} founded @@acronym@{GNU@}.
@@ -7869,7 +7880,7 @@ also as shown here.
 @TeX{} typesets any uppercase letters between the braces of an
 @code{@@sc} command in full-size capitals; only lowercase letters are
 printed in the small caps font.  In the Info output, the argument to
-@code{@@sc} is printed in all upper case.  In HTML, the argument is
+@code{@@sc} is printed in all uppercase.  In HTML, the argument is
 uppercased and the output marked with the @code{<small>} tag to reduce
 the font size.
 
@@ -9012,8 +9023,8 @@ Write the @code{@@enumerate} command at the beginning of a line.  The
 command does not require an argument, but accepts either a number or a
 letter as an option.  Without an argument, @code{@@enumerate} starts the
 list with the number @samp{1}.  With a numeric argument, such as
-@samp{3}, the command starts the list with that number.  With an upper
-or lower case letter, such as @samp{a} or @samp{A}, the command starts
+@samp{3}, the command starts the list with that number.  With an upper-
+or lowercase letter, such as @samp{a} or @samp{A}, the command starts
 the list with that letter.
 
 Write the text of the enumerated list in the same way as an itemized
@@ -9101,16 +9112,16 @@ other text.
 @item
 @code{@@enumerate @var{upper-case-letter}}
 
-With an upper case letter as argument, start a list
+With an uppercase letter as argument, start a list
 in which each item is marked
-by a letter, beginning with that upper case letter.
+by a letter, beginning with that uppercase letter.
 
 @item
 @code{@@enumerate @var{lower-case-letter}}
 
-With a lower case letter as argument, start a list
+With a lowercase letter as argument, start a list
 in which each item is marked by
-a letter, beginning with that lower case letter.
+a letter, beginning with that lowercase letter.
 @end enumerate
 
 You can also nest enumerated lists, as in an outline.
@@ -9267,8 +9278,8 @@ For example,
 @@item upcase
 @@itemx downcase
 These two functions accept a character or a string as
-argument, and return the corresponding upper case (lower
-case) character or string.
+argument, and return the corresponding uppercase (lowercase)
+character or string.
 @@end table
 @end group
 @end example
@@ -9280,8 +9291,8 @@ This produces:
 @item upcase
 @itemx downcase
 These two functions accept a character or a string as
-argument, and return the corresponding upper case (lower
-case) character or string.
+argument, and return the corresponding uppercase (lowercase)
+character or string.
 @end table
 
 @noindent
@@ -10171,7 +10182,7 @@ Concept index entries consist of text.  The best way to write an index
 is to devise entries which are terse yet clear.  If you can do this,
 the index usually looks better if the entries are written just as they
 would appear in the middle of a sentence, that is, capitalizing only
-proper names and acronyms that always call for upper case letters.
+proper names and acronyms that always call for uppercase letters.
 This is the case convention we use in most GNU manuals' indices.
 
 If you don't see how to make an entry terse yet clear, make it longer
@@ -10184,7 +10195,7 @@ In any event, do not ever capitalize a case-sensitive name such as a C
 or Lisp function name or a shell command; that would be a spelling
 error.  Entries in indices other than the concept index are symbol
 names in programming languages, or program names; these names are
-usually case-sensitive, so likewise use upper and lower case as
+usually case-sensitive, so likewise use upper- and lowercase as
 required.
 
 @cindex Unique index entries
@@ -10690,12 +10701,57 @@ The following sections describe commands that control spacing of various
 kinds within and after sentences.
 
 @menu
+* Multiple Spaces::             Inserting multiple spaces.
 * Not Ending a Sentence::       Sometimes a . doesn't end a sentence.
 * Ending a Sentence::           Sometimes it does.
-* Multiple Spaces::             Inserting multiple spaces.
 * frenchspacing::               Specifying end-of-sentence spacing.
 * dmn::                         How to format a dimension.
 @end menu
+
+
+@node Multiple Spaces
+@subsection Multiple Spaces
+
+@cindex Multiple spaces
+@cindex Whitespace, inserting
+@cindex Space, inserting horizontal
+@findex <space>
+@findex <tab>
+@findex <newline>
+
+Ordinarily, multiple whitespace characters (space, tab, and newline)
+are collapsed into a single space.
+
+Occasionally, you may want to produce several consecutive spaces,
+either for purposes of example (e.g., what your program does with
+multiple spaces as input), or merely for purposes of appearance in
+headings or lists.  Texinfo supports three commands:
+@code{@@@kbd{SPACE}}, @code{@@@kbd{TAB}}, and @code{@@@kbd{NL}}, all
+of which insert a single space into the output.  (Here,
+@code{@@@kbd{SPACE}} represents an @samp{@@} character followed by a
+space, i.e., @samp{@@ }, @kbd{TAB} represents an actual tab character,
+and @kbd{NL} represent the tab character and end-of-line, i.e., when
+@samp{@@} is the last character on a line.)
+
+For example,
+@example
+Spacey@@ @@ @@ @@
+example.
+@end example
+
+@noindent produces
+
+@example
+Spacey@ @ @ @
+example.
+@end example
+
+Other possible uses of @code{@@@kbd{SPACE}} have been subsumed by
+@code{@@multitable} (@pxref{Multi-column Tables}).
+
+Do not follow any of these commands with braces.
+
+To produce a non-breakable space, see @ref{tie, @code{@@tie}}.
 
 
 @node Not Ending a Sentence
@@ -10718,8 +10774,8 @@ exclamation mark that ends a sentence.
 @findex <colon> @r{(suppress end-of-sentence space)}
 Use the @code{@@:}@: command after a period, question mark,
 exclamation mark, or colon that should not be followed by extra space.
-For example, use @code{@@:}@: after periods that end abbreviations
-which are not at the ends of sentences.
+For example, use @code{@@:}@: after periods that end (lowercase)
+abbreviations which are not at the ends of sentences.
 
 Also, when a parenthetical remark in the middle of a sentence (like
 this one!)@: ends with a period, exclamation point, or question mark,
@@ -10771,11 +10827,15 @@ sentence, and no extra space is inserted.
 @findex ! @r{(end of sentence)}
 @findex ? @r{(end of sentence)}
 @cindex Spacing, at ends of sentences
+As mentioned above, Texinfo normally inserts additional space after
+the end of a sentence.  It uses a simple heuristic for this: a
+sentence ends with a period, exclamation point, or question mark
+followed by optional closing punctuation and then whitespace, and
+@emph{not} preceded by a capital letter.
+
 Use @code{@@.}@: instead of a period, @code{@@!}@: instead of an
-exclamation point, and @code{@@?}@: instead of a question mark at the end
-of a sentence that ends with a capital letter.  Otherwise, the formatter
-will think the letter is an abbreviation and will not insert the correct
-end-of-sentence spacing.  Here is an example:
+exclamation point, and @code{@@?}@: instead of a question mark at the
+end of a sentence that does end with a capital letter.  For example:
 
 @example
 Give it to M.I.B. and to M.E.W@@.  Also, give it to R.J.C@@.
@@ -10791,68 +10851,23 @@ Give it to M.I.B. and to M.E.W@.  Also, give it to R.J.C@.@*
 Give it to M.I.B. and to M.E.W.  Also, give it to R.J.C.
 @end quotation
 
-In the HTML file output, @code{@@.}@: is equivalent to a simple
-@samp{.}; likewise for @code{@@!}@: and @code{@@?}@:.
+In the HTML output, @code{@@.}@: is equivalent to a simple @samp{.};
+likewise for @code{@@!}@: and @code{@@?}@:.
 
-The meanings of @code{@@:} and @code{@@.}@: in Texinfo are designed to
-work well with the Emacs sentence motion commands (@pxref{Sentences,,,
-emacs, The GNU Emacs Manual}).
+The meanings of @code{@@:} and @code{@@.}, etc.@: in Texinfo are
+designed to work well with the Emacs sentence motion commands
+(@pxref{Sentences,,, emacs, The GNU Emacs Manual}).
 
 Do not put braces after any of these commands.
 
 A few Texinfo commands are not considered as being an abbreviation,
 even though they may end with a capital letter when expanded, so that
-you don't have to insert @code{@@.} and companions. This is the case
+you don't have to insert @code{@@.} and companions.  This is the case
 for code-like highlighting commands, @code{@@var} arguments ending
 with a capital letter, and @code{@@TeX}.  For example, that sentence
 ended with @samp{@@code@{@@@@TeX@}.}; @code{@@.} was not needed.  Also
-in @code{... @@var@{VARIABLE@}. Text} the period ends the sentence,
-there is no need to insert @code{@@.}.
-
-
-@node Multiple Spaces
-@subsection Multiple Spaces
-
-@cindex Multiple spaces
-@cindex Whitespace, inserting
-@cindex Space, inserting horizontal
-@findex <space>
-@findex <tab>
-@findex <newline>
-
-Ordinarily, multiple whitespace characters (space, tab, and newline)
-are collapsed into a single space.
-
-Occasionally, you may want to produce several consecutive spaces,
-either for purposes of example (e.g., what your program does with
-multiple spaces as input), or merely for purposes of appearance in
-headings or lists.  Texinfo supports three commands:
-@code{@@@kbd{SPACE}}, @code{@@@kbd{TAB}}, and @code{@@@kbd{NL}}, all
-of which insert a single space into the output.  (Here,
-@code{@@@kbd{SPACE}} represents an @samp{@@} character followed by a
-space, i.e., @samp{@@ }, @kbd{TAB} represents an actual tab character,
-and @kbd{NL} represent the tab character and end-of-line, i.e., when
-@samp{@@} is the last character on a line.)
-
-For example,
-@example
-Spacey@@ @@ @@ @@
-example.
-@end example
-
-@noindent produces
-
-@example
-Spacey@ @ @ @
-example.
-@end example
-
-Other possible uses of @code{@@@kbd{SPACE}} have been subsumed by
-@code{@@multitable} (@pxref{Multi-column Tables}).
-
-Do not follow any of these commands with braces.
-
-To produce a non-breakable space, see @ref{tie, @code{@@tie}}.
+in @code{... @@var@{VARNAME@}. Text} the period after @var{VARNAME}
+ends the sentence; there is no need to use @code{@@.}.
 
 
 @node frenchspacing
@@ -17539,13 +17554,16 @@ For HTML@.  Use icons for the navigation panel.
 If set, begin outputting at @code{@@setfilename}, if
 @code{@@setfilename} is present.
 
+@item IGNORE_SPACE_AFTER_BRACED_COMMAND_NAME
+If set, spaces are ignored after an @@-command that takes braces.
+Default on, matching the @TeX{} behavior.
+
 @item IMAGE_LINK_PREFIX
 For HTML@.  If set, the associated value is prepended to the image file 
 links.
 
 @item INDEX_ENTRY_COLON
 Symbol used between the index entry and the associated node or section.
-
 
 @item INLINE_CONTENTS
 If set, output the contents where the @code{@@contents} and similar
@@ -18372,8 +18390,8 @@ File: emacs  Node: Top, Up: (DIR), Next: Distrib
 @end example
 
 @noindent
-In this case, the @file{dir} file name is written in upper case
-letters---it can be written in either upper or lower case.  This is not
+In this case, the @file{dir} file name is written in uppercase
+letters---it can be written in either upper- or lowercase.  This is not
 true in general, it is a special case for @file{dir}.
 
 
@@ -20579,7 +20597,7 @@ Generate the alphabetized index for @var{index-name} (using two columns in a pri
 manual).  @xref{Printing Indices & Menus}.
 
 @item @@pxref@{@var{node}, [@var{entry}], [@var{node-title}], [@var{info-file}], [@var{manual}]@}
-Make a reference that starts with a lower case `see' in a printed
+Make a reference that starts with a lowercase `see' in a printed
 manual.  Use within parentheses only.  Only the first argument is
 mandatory.  @xref{pxref, , @code{@@pxref}}.
 
@@ -20995,26 +21013,26 @@ references.  @xref{Three Arguments}.
 @cindex Syntax, of @@-commands
 @cindex Command syntax
 
-The character @samp{@@} is used to start special Texinfo commands.
-(It has the same meaning that @samp{\} has in plain @TeX{}.)  Texinfo
-has four types of @@-command:
+The character @samp{@@} is used to start all Texinfo commands.  (It
+has the same meaning that @samp{\} has in plain @TeX{}.)  Texinfo has
+four types of @@-command:
 
 @table @asis
 @item 1. Non-alphabetic commands.
 These commands consist of an @@ followed by a punctuation mark or
-other character that is not part of the alphabet.  Non-alphabetic
+other character that is not part of the Latin alphabet.  Non-alphabetic
 commands are almost always part of the text within a paragraph.  The
 non-alphabetic commands include @code{@@@@}, @code{@@@{}, @code{@@@}},
 @code{@@.}, @code{@@@kbd{SPACE}}, most of the accent commands, and
 many more.
 
 @item 2. Alphabetic commands that do not require arguments.
-These commands start with @@ followed by a word followed by left- and
-right-hand braces.  These commands insert special symbols in the
-document; they do not require arguments.  For example,
+These commands start with @@ followed by a word followed by a
+left and right- brace.  These commands insert special symbols in
+the document; they do not take arguments.  Some examples:
 @code{@@dots@{@}} @result{} @samp{@dots{}}, @code{@@equiv@{@}}
-@result{} @samp{@equiv{}}, @code{@@TeX@{@}} @result{} `@TeX{}',
-and @code{@@bullet@{@}} @result{} @samp{@bullet{}}.
+@result{} @samp{@equiv{}}, @code{@@TeX@{@}} @result{} `@TeX{}', and
+@code{@@bullet@{@}} @result{} @samp{@bullet{}}.
 
 @item 3. Alphabetic commands that require arguments within braces.
 These commands start with @@ followed by a letter or a word, followed by an
@@ -21030,27 +21048,31 @@ the end of the line.  If there is an argument, it is separated from
 the command name by a space.  Braces are not used.
 @end table
 
+Whitespace following an @@-command name are optional and (usually)
+ignored if present.  The exceptions are contexts whee whitespace is
+significant, e.g., an @code{@@example} environment.
+
 @cindex Braces and argument syntax
 Thus, the alphabetic commands fall into classes that have
 different argument syntaxes.  You cannot tell to which class a command
 belongs by the appearance of its name, but you can tell by the
 command's meaning: if the command stands for a glyph, it is in
 class 2 and does not require an argument; if it makes sense to use the
-command together with other text as part of a paragraph, the command
+command among other text as part of a paragraph, the command
 is in class 3 and must be followed by an argument in braces;
 otherwise, it is in class 4 and uses the rest of the line as its
 argument.
 
-The purpose of having a different syntax for commands of classes 3 and
-4 is to make Texinfo files easier to read, and also to help the GNU
-Emacs paragraph and filling commands work properly.  There is only one
-exception to this rule: the command @code{@@refill}, which is always
-used at the end of a paragraph immediately following the final period
-or other punctuation character.  @code{@@refill} takes no argument and
-does @emph{not} require braces.  @code{@@refill} never confuses the
-Emacs paragraph commands because it cannot appear at the beginning of
-a line.  It is also no longer needed, since all formatters now refill
-paragraphs automatically.
+The purpose of having a different syntax for commands of classes 3
+and@tie{}4 is to make Texinfo files easier to read, and also to help
+the GNU Emacs paragraph and filling commands work properly.  There is
+only one exception to this rule: the command @code{@@refill}, which is
+always used at the end of a paragraph immediately following the final
+period or other punctuation character.  @code{@@refill} takes no
+argument and does @emph{not} require braces.  @code{@@refill} never
+confuses the Emacs paragraph commands because it cannot appear at the
+beginning of a line.  It is also no longer needed, since all
+formatters now refill paragraphs automatically.
 
 
 @node Command Contexts
@@ -21150,13 +21172,13 @@ information will certainly not find it in that chapter.
 
 @item
 Consistently capitalize the first word of every concept index entry,
-or else consistently use lower case.  Terse entries often call for
-lower case; longer entries for capitalization.  Whichever case
+or else consistently use lowercase.  Terse entries often call for
+lowercase; longer entries for capitalization.  Whichever case
 convention you use, please use one or the other consistently!  Mixing
 the two styles looks bad.
 
 @item
-Always capitalize or use upper case for those words in an index for
+Always capitalize or use uppercase for those words in an index for
 which this is proper, such as names of countries or acronyms.  Always
 use the appropriate case for case-sensitive names, such as those in C or
 Lisp.
@@ -21288,7 +21310,7 @@ commands.
 @itemize @bullet
 @item
 Capitalize ``Texinfo''; it is a name.  Do not write the @samp{x} or
-@samp{i} in upper case.
+@samp{i} in uppercase.
 
 @item
 Capitalize ``Info''; it is a name.
@@ -21649,7 +21671,7 @@ Versions System}), RCS (@pxref{Top,,, rcs, Revision Control System})
 or other version control systems, which expand it into a string such
 as:
 @example
-$Id: texinfo.txi,v 1.490 2012/11/13 18:59:43 karl Exp $
+$Id: texinfo.txi,v 1.496 2012/11/26 18:52:10 karl Exp $
 @end example
 (This is useful in all sources that use version control, not just manuals.)
 You may wish to include the @samp{$Id:} comment in the @code{@@copying}
@@ -22650,7 +22672,7 @@ M-x Info-validate
 @end example
 
 @noindent
-Note that the @code{Info-validate} command requires an upper case
+Note that the @code{Info-validate} command requires an uppercase
 `I'@.  You may also need to create a tag table before running
 @code{Info-validate}.  @xref{Tagifying}.
 
@@ -22741,7 +22763,7 @@ M-x Info-tagify
 @end example
 
 @noindent
-(Note the upper case @samp{I} in @code{Info-tagify}.)  This creates an
+(Note the uppercase @samp{I} in @code{Info-tagify}.)  This creates an
 Info file with a tag table that you can validate.
 
 The third step is to validate the Info file:
@@ -22751,7 +22773,7 @@ M-x Info-validate
 @end example
 
 @noindent
-(Note the upper case @samp{I} in @code{Info-validate}.)
+(Note the uppercase @samp{I} in @code{Info-validate}.)
 In brief, the steps are:
 
 @example
@@ -22799,7 +22821,7 @@ M-x Info-split
 @end example
 
 @noindent
-(Note that the @samp{I} in @samp{Info} is upper case.)
+(Note that the @samp{I} in @samp{Info} is uppercase.)
 
 When you use the @code{Info-split} command, the buffer is modified into a
 (small) Info file which lists the indirect subfiles.  This file should be
