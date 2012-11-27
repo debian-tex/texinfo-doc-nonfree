@@ -5,11 +5,12 @@ Maintainer: Debian TeX maintainers <debian-tex-maint@lists.debian.org>
 Uploaders: Norbert Preining <preining@debian.org>
 Build-Depends: debhelper (>= 5)
 Build-Depends-Indep: texinfo (>= 4.11)
-Standards-Version: 3.8.0
+Standards-Version: 3.9.3
 
 Package: texinfo-doc-nonfree
 Architecture: all
 Recommends: info
+Depends: ${misc:Depends}
 Conflicts: texinfo (<= 4.8-8), info (<= 4.8-8)
 Replaces: texinfo (<= 4.8-8), info (<= 4.8-8)
 Description: texinfo and info documentation that is non-free

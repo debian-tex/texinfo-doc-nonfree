@@ -1,8 +1,10 @@
 texinfo-doc-nonfree (4.13.91-1) experimental; urgency=low
 
   * new upstream pre-release
+  * bump standards version to 3.9.3
+  * convert to 3.0 (quilt)
 
- -- Norbert Preining <preining@debian.org>  Tue, 27 Nov 2012 13:21:09 +0900
+ -- Norbert Preining <preining@debian.org>  Tue, 27 Nov 2012 13:33:55 +0900
 
 texinfo-doc-nonfree (4.13a-1) unstable; urgency=low
 

@@ -5,12 +5,17 @@ export DH_OPTIONS
 
 pkg := $(CURDIR)/debian/texinfo-doc-nonfree
 
-build:
+build: build-arch build-indep
+build-arch: build-stamp
+build-indep: build-stamp
+
+build-stamp:
 	dh_testdir
 	makeinfo texinfo.txi
 	makeinfo info.texi
 	makeinfo info-stnd.texi
 	makeinfo --html texinfo.txi
+	touch $@
 
 clean:
 	dh_testdir
@@ -18,9 +23,12 @@ clean:
 	rm -f info.info 
 	rm -f info-stnd.info
 	rm -rf texinfo.html
-	dh_clean
+	dh_clean build-stamp install-stamp
 
-install:
+install: install-stamp
+
+install-stamp: DH_OPTIONS=
+install-stamp: build-stamp
 	dh_testdir
 	dh_testroot
 	dh_clean -k
@@ -29,6 +37,7 @@ install:
 	# install the html documentation
 	mkdir -p $(pkg)/usr/share/doc/texinfo/
 	cp -a texinfo.html $(pkg)/usr/share/doc/texinfo/html
+	touch install-stamp
 
 binary-indep: install
 	dh_testdir
