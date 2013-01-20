@@ -1,3 +1,9 @@
+texinfo-doc-nonfree (4.13.94-1) experimental; urgency=low
+
+  * Imported Upstream version 4.13.94
+
+ -- Norbert Preining <preining@debian.org>  Sun, 20 Jan 2013 21:36:31 +0900
+
 texinfo-doc-nonfree (4.13.93-1) experimental; urgency=low
 
   * Imported Upstream version 4.13.93
