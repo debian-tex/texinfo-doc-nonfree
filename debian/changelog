@@ -1,8 +1,8 @@
-texinfo-doc-nonfree (4.13.96-1) UNRELEASED; urgency=low
+texinfo-doc-nonfree (5.0-1) experimental; urgency=low
 
-  * Imported Upstream version 4.13.96
+  * Imported Upstream version 5.0
 
- -- Norbert Preining <preining@debian.org>  Tue, 05 Feb 2013 20:43:09 +0900
+ -- Norbert Preining <preining@debian.org>  Sun, 17 Feb 2013 23:20:49 +0900
 
 texinfo-doc-nonfree (4.13.95-1) experimental; urgency=low
 
