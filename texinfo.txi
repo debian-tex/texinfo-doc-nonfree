@@ -1,5 +1,5 @@
 \input texinfo.tex    @c -*-texinfo-*-
-@c $Id: texinfo.txi,v 1.540 2013/02/17 00:19:12 karl Exp $
+@c $Id: texinfo.txi 5232 2013-03-11 18:31:12Z karl $
 @c Ordinarily, Texinfo files have the extension .texi.  But texinfo.texi
 @c clashes with texinfo.tex on 8.3 filesystems, so we use texinfo.txi.
 
@@ -1042,7 +1042,9 @@ project by implementing additional output formats for Texinfo, that
 would be excellent.  The way to do this that would be most useful is
 to write a new back-end for @command{texi2any}, our reference
 implementation of a Texinfo parser; it creates a tree representation
-of the Texinfo input that you can use for the conversion.
+of the Texinfo input that you can use for the conversion.  The
+documentation in the source file
+@file{tp/Texinfo/Convert/Converter.pm} is a good place to start.
 @xref{Generic Translator @t{texi2any}}.
 
 Another viable approach is use the Texinfo XML output from
@@ -1445,7 +1447,7 @@ tells @TeX{} to open auxiliary files.  @strong{All text before
 @item
 The @code{@@settitle} line specifies a title for the page headers (or
 footers) of the printed manual, and the default title and document
-description for the @samp{<head>} in HTML.  Strictly speaking,
+description for the @samp{<head>} in HTML@.  Strictly speaking,
 @code{@@settitle} is optional---if you don't mind your document being
 titled `Untitled'.
 
@@ -1811,7 +1813,7 @@ such support in C, in the particular case of @command{makeinfo}, it
 would have been tantamount to rewriting the entire program.  In Perl,
 much of that comes essentially for free.
 
-@item Additional back-ends.  The @command{makeinfo} code had grown
+@item Additional back-ends.  The @command{makeinfo} code had become
 convoluted to the point where adding a new back-end was quite complex,
 requiring complex interactions with existing back-ends.  In contrast,
 our Perl implementation provides a clean tree-based representation for
@@ -4552,7 +4554,7 @@ is otherwise the same.
 In Info and plain text, the @code{@@majorheading} and
 @code{@@chapheading} commands produce the same output as
 @code{@@chapter}: the title is printed on a line by itself with a line
-of asterisks underneath.  Similarly for HTML.  The only difference is
+of asterisks underneath.  Similarly for HTML@.  The only difference is
 the lack of numbering and the lack of any association with nodes.
 @xref{@t{@@chapter}}.
 
@@ -7196,6 +7198,13 @@ command and related commands (e.g., @code{@@kbd}, @code{@@command}),
 in typewriter-like contexts such as the @code{@@example} environment
 (@pxref{@t{@@example}}) and @code{@@code} itself, etc.
 
+To control which quoting characters are implicitly inserted by Texinfo
+processors in the output of @samp{@@code}, etc., see the
+@code{OPEN_QUOTE_SYMBOL} and @code{CLOSE_QUOTE_SYMBOL} customization
+variables (@pxref{Other Customization Variables}).  This is separate
+from how actual quotation characters in the input document are handled
+(@pxref{Inserting Quote Characters}).
+
 
 @node @t{@@kbd}
 @subsection @code{@@kbd}@{@var{keyboard-characters}@}
@@ -9016,35 +9025,42 @@ Two-column tables, optionally with indexing.
 @findex itemize
 @cindex Itemization
 
-The @code{@@itemize} command produces sequences of indented
-paragraphs, with a bullet or other mark inside the left margin
-at the beginning of each paragraph for which such a mark is desired.
+The @code{@@itemize} command produces a sequence of ``items'', each
+starting with a bullet or other mark inside the left margin, and
+generally indented.
 
 @cindex @code{@@w}, for blank items
 Begin an itemized list by writing @code{@@itemize} at the beginning of
 a line.  Follow the command, on the same line, with a character or a
-Texinfo command that generates a mark.  Usually, you will write
+Texinfo command that generates a mark.  Usually, you will use
 @code{@@bullet} after @code{@@itemize}, but you can use
 @code{@@minus}, or any command or character that results in a single
 character in the Info file.  (When you write the mark command such as
 @code{@@bullet} after an @code{@@itemize} command, you may omit the
 @samp{@{@}}.)  If you don't specify a mark command, the default is
-@code{@@bullet}.  If you don't want any mark at all, use
-@code{@@w@{@}} (in this case the braces are required).
-
-Write the text of the indented paragraphs themselves after the
-@code{@@itemize}, up to another line that says @code{@@end
-itemize}.
+@code{@@bullet}.  If you don't want any mark at all, but still want
+logical items, use @code{@@w@{@}} (in this case the braces are
+required).
 
 @findex item
-At the beginning of each paragraph for which a mark in the margin is
-desired, write a line that starts with @code{@@item}.  It is ok to
-have text following the @code{@@item}.
+After the @code{@@itemize}, write your items, each starting with
+@code{@@item}.  Text can follow on the same line as the @code{@@item}.
+The text of an item can continue for more than one paragraph.
 
-Usually, you should put a blank line before an @code{@@item}.  This
-puts a blank line in the Info file. (@TeX{} inserts the proper
-interline whitespace in either case.)  Except when the entries are
-very brief, these blank lines make the list look better.
+There should be at least one @code{@@item} inside the @code{@@itemize}
+environment.  If none are present, @code{makeinfo} gives a warning.
+If you just want indented text and not a list of items, use
+@code{@@indentedblock}; @pxref{@t{@@indentedblock}}.
+
+Index entries and comments that are given before an @code{@@item}
+including the first, are automatically moved (internally) to after the
+@code{@@item}, so the output is as expected.  Historically this has
+been a common practice.
+
+Usually, you should put a blank line between items.  This puts a blank
+line in the Info file. (@TeX{} inserts the proper vertical space in
+any case.)  Except when the entries are very brief, these blank lines
+make the list look better.
 
 Here is an example of the use of @code{@@itemize}, followed by the
 output it produces.  @code{@@bullet} produces an @samp{*} in Info and
@@ -9129,9 +9145,9 @@ Second outer item.
 @findex enumerate
 @cindex Enumeration
 
-@code{@@enumerate} is like @code{@@itemize}
-(@pxref{@t{@@itemize}}), except that the labels on the items are
-successive integers or letters instead of bullets.
+@code{@@enumerate} is like @code{@@itemize} (@pxref{@t{@@itemize}}),
+except that the labels on the items are successive integers or letters
+instead of bullets.
 
 Write the @code{@@enumerate} command at the beginning of a line.  The
 command does not require an argument, but accepts either a number or a
@@ -9143,8 +9159,9 @@ the list with that letter.
 
 Write the text of the enumerated list in the same way as an itemized
 list: write a line starting with @code{@@item} at the beginning of
-each paragraph that you want enumerated.  It is ok to have text
-following the @code{@@item}.
+each item in the enumeration.  It is ok to have text following the
+@code{@@item}, and the text for an item can continue for several
+paragraphs.
 
 You should put a blank line between entries in the list.
 This generally makes it easier to read the Info file.
@@ -11485,9 +11502,9 @@ For displayed equations, you must at present use @TeX{} directly
 @cindex Textual glyphs
 
 Texinfo has support for a few additional glyphs that are commonly used
-in printed text but not available in ASCII.  Of course, there are many
-thousands more.  It is possible to use Unicode characters as-is as far
-as @code{makeinfo} is concerned, but @TeX{} is not so lucky.
+in printed text but not available in ASCII@.  Of course, there are
+many thousands more.  It is possible to use Unicode characters as-is
+as far as @code{makeinfo} is concerned, but @TeX{} is not so lucky.
 
 @menu
 * @t{@@TeX @@LaTeX}::                 The @TeX{} logos.
@@ -13717,8 +13734,6 @@ This has no particular effect, but it's included for completeness.
 
 @item UTF-8
 The vast global character encoding, expressed in 8-bit bytes.
-The Texinfo processors have no deep knowledge of Unicode; for the most
-part, they just pass along the input they are given to the output.
 
 @item ISO-8859-2
 @itemx ISO-8859-1
@@ -13776,7 +13791,7 @@ this:
 @end example
 
 In XML and Docbook output, UTF-8 is always used for the output file,
-since all the XML processors are supposed to be able to process that
+since all XML processors are supposed to be able to process that
 encoding.
 
 @cindex Computer Modern fonts
@@ -13790,7 +13805,7 @@ Although modern @TeX{} systems support nearly every script in use in
 the world, this wide-ranging support is not available in
 @file{texinfo.tex}, and it's not feasible to duplicate or incorporate
 all that effort.  Our plan to support other scripts is to create a
-@LaTeX{} backend to @command{texi2any}, where the support is already
+@LaTeX{} back-end to @command{texi2any}, where the support is already
 present.
 
 
@@ -14217,13 +14232,17 @@ is ignored.  If @var{flag} is clear, text through the following
 You use the @code{@@set} command to specify a value for a flag, which
 is later expanded by the @code{@@value} command.
 
-A @dfn{flag} (aka @dfn{variable}) is an identifier consisting of
-alphanumerics, @samp{-}, and @samp{_}.  However, it is best to use
-only letters and numerals in a flag name, not @samp{-} or
-@samp{_}---they will work in some contexts, but not all, due to
-limitations in @TeX{}.
+A @dfn{flag} (aka @dfn{variable}) name is an identifier starting with
+an alphanumeric, @samp{-}, or @samp{_}.  Subsequent characters, if
+any, may not be whitespace, @samp{@@}, braces, angle brackets, or any
+of @samp{~`^+|}; other characters, such as @samp{%}, may work.
+However, it is best to use only letters and numerals in a flag name,
+not @samp{-} or @samp{_} or others---they will work in some contexts,
+but not all, due to limitations in @TeX{}.
 
 The value is the remainder of the input line, and can contain anything.
+However, unlike most other commands which take the rest of the line as
+a value, @code{@@set} need not appear at the beginning of a line.
 
 Write the @code{@@set} command like this:
 
@@ -14837,8 +14856,8 @@ example, with a recursive macro:
 @noindent
 will produce the string @samp{foobarbaz}.
 
-@item Otherwise, a comma should be explicitly quoted, as above, to be
-treated as a part of an argument.
+@item Otherwise, a comma should be explicitly quoted, as above, for it
+to be treated as a part of an argument.
 @end enumerate
 
 @cindex Braces, in macro arguments
@@ -14925,13 +14944,13 @@ By design, macro expansion does not happen in the following contexts
 in @command{makeinfo}:
 
 @itemize @bullet
-@item @code{@@macro} and @code{@@unmacro} lines.
+@item @code{@@macro} and @code{@@unmacro} lines;
 
-@item @code{@@if...} lines, including @code{@@ifset} and similar,
+@item @code{@@if...} lines, including @code{@@ifset} and similar;
 
-@item @code{@@set}, @code{@@clear}, @code{@@value}.
+@item @code{@@set}, @code{@@clear}, @code{@@value};
 
-@item @code{@@clickstyle} lines.
+@item @code{@@clickstyle} lines;
 
 @item @code{@@end} lines.
 @end itemize
@@ -14939,14 +14958,14 @@ in @command{makeinfo}:
 @noindent Unfortunately, @TeX{} may do some expansion in these situations,
 possibly yielding errors.
 
-Also, due to unavoidable limitations, quite a few macro-related
-constructs cause problems with @TeX{}, as follows.  If you get
-macro-related errors when producing the printed version of a manual,
-you might try expanding the macros with @command{makeinfo} by invoking
+Also, quite a few macro-related constructs cause problems with @TeX{};
+some of the caveats are listed below.  Thus, if you get macro-related
+errors when producing the printed version of a manual, you might try
+expanding the macros with @command{makeinfo} by invoking
 @command{texi2dvi} with the @samp{-E} option (@pxref{Format with
-@t{texi2dvi}}).  Or eschew Texinfo macros altogether and use a
-language designed for macro processing, such as M4 (@pxref{External
-Macro Processors}).
+@t{texi2dvi}}).  Or, more reliably, eschew Texinfo macros altogether
+and use a language designed for macro processing, such as M4
+(@pxref{External Macro Processors}).
 
 @itemize @bullet
 @item
@@ -14962,12 +14981,28 @@ unpredictable.
 All macros are expanded inside at least one @TeX{} group.
 
 @item
+Macro arguments cannot cross lines.
+
+@item
+Macros containing a command which must be on a line by itself, such as
+a conditional, cannot be invoked in the middle of a line.  Similarly,
+macros containing line-oriented commands or text, such as
+@code{@@example} environments, may behave unpredictably in @TeX{}.
+
+@item
+White space is ignored at the beginnings of lines.
+
+@item
+Macros can't be reliably used in the argument to accent commands
+(@pxref{Inserting Accents}).
+
+@item
 The backslash escape for commas in macro arguments does not work;
 @code{@@comma@{@}} must be used.
 
 @item
 As a consequence, if a macro takes two or more arguments, and you want
-to pass an argument with the Texinfo command @code{@@,} (for a
+to pass an argument with the Texinfo command @code{@@,} (to produce a
 cedilla, @pxref{Inserting Accents}), you have to use @code{@@value} or
 another work-around.  Otherwise, @TeX{} takes the comma as separating
 the arguments.  Example:
@@ -14991,22 +15026,6 @@ arguments @samp{Fran@@} and @samp{cois} to the macro, and nothing good
 results.  And, as just mentioned, although the comma can be escaped
 with a backslash for @code{makeinfo} (@samp{@@\,}), that doesn't work
 in @TeX{}, so there is no other solution.
-
-@item
-Macro arguments cannot cross lines.
-
-@item
-Macros can't be reliably used in the argument to accent commands
-(@pxref{Inserting Accents}).
-
-@item
-Macros containing a command which must be on a line by itself, such as
-a conditional, cannot be invoked in the middle of a line.  Similarly,
-macros containing line-oriented commands or text, such as
-@code{@@example} environments, may behave unpredictably in @TeX{}.
-
-@item
-White space is ignored at the beginnings of lines.
 
 @item
 It is usually best to avoid comments inside macro definitions, but
@@ -15092,8 +15111,34 @@ have incompletely nested macro definitions.  That is, @code{@@macro}
 and @code{@@end macro} (likewise for @code{@@rmacro}) must be
 correctly paired.  For example, you cannot start a macro definition
 within a macro, and then end that nested definition outside the macro.
-
 @end itemize
+
+In the @code{makeinfo} implementation before Texinfo 5.0, ends of
+lines from expansion of an @code{@@macro} definition did not end an
+@@-command line-delimited argument (@code{@@chapter}, @code{@@center},
+etc.).  This is no longer the case.  For example:
+
+@example
+@@macro twolines@{@}
+aaa
+bbb
+@@end macro
+@@center @@twolines@{@}
+@end example
+
+In the current @code{makeinfo}, this is equivalent to:
+
+@example
+@@center aaa
+bbb
+@end example
+
+@noindent with just @samp{aaa} as the argument to @code{@@center}.  In
+the earlier implementation, it would have been parsed as this:
+
+@example
+@@center aaa bbb
+@end example
 
 
 @node @t{@@alias}
@@ -17339,7 +17384,7 @@ of executing the @command{texi2dvi} program when those outputs are
 requested.
 
 The output format options for this are @option{--dvi},
-@option{--dvipdf}, @option{--pdf}, and @option{--pdf}.  @xref{Format
+@option{--dvipdf}, @option{--pdf}, and @option{--ps}.  @xref{Format
 with @t{texi2dvi}}, for more details on these options and general
 @command{texi2dvi} operation.  In addition, the @option{--verbose},
 @option{--silent}, and @option{--quiet} options are passed on if
@@ -17596,6 +17641,9 @@ bytes and lines obtained when converting to Info, and other information.
 Instead of generating a regular output format, output a text representation
 of the tree obtained by parsing the input texinfo document.
 
+@item parse
+Do only Texinfo source parsing; there is no output.
+
 @item plaintexinfo
 Output the Texinfo source with all the macros, @code{@@include} and
 @code{@@value@{@}} expanded.  This is similar to setting
@@ -17607,6 +17655,10 @@ the normal conversion, output of Texinfo is the main output.
 Output raw text, with minimal formatting.  For example, footnotes are
 ignored and there is no paragraph filling.  This is used by the parser
 for file names and copyright text in HTML comments, for example.
+
+@item structure
+Do only Texinfo source parsing and determination of the document
+structure; there is no output.
 
 @item texinfosxml
 @cindex SXML output
@@ -17936,7 +17988,8 @@ into the categories of the previous sections.
 @vtable @code
 @item CLOSE_QUOTE_SYMBOL
 When a closing quote is needed, use this character; default @code{&rsquo;}
-in HTML, @code{&#8217;} in Docbook.
+in HTML, @code{&#8217;} in Docbook.  The default for Info is the same
+as @code{OPEN_QUOTE_SYMBOL} (see below).
 
 @c @item COMPLETE_IMAGE_PATHS
 @c If set, the image files are computed to be relative from the document
@@ -18067,8 +18120,14 @@ If set, use node names in menu entries, otherwise prefer section names;
 default true.
 
 @item OPEN_QUOTE_SYMBOL
-When an opening quote is needed, use the corresponding character; default
-@code{&lsquo;} for HTML, @code{&#8216;} for Docbook.
+When an opening quote is needed, e.g., for @samp{@@samp} output, use
+the specified character; default @code{&lsquo;} for HTML,
+@code{&#8216;} for Docbook.  For Info, the default depends on the
+enabled document encoding (@pxref{@t{@@documentencoding}}); if no
+document encoding is set, or the encoding is US-ASCII, etc., @samp{'}
+is used.  This character usually appears as an undirected single quote
+on modern systems.  If the document encoding is Unicode, the Info
+output uses a Unicode left quote.
 
 @item OUTPUT_ENCODING_NAME
 Normalized encoding name used for output files.  Should be a usable
@@ -19159,6 +19218,7 @@ If @var{dir-file} (however specified) does not exist,
 @cindex Compressed dir files, reading
 @cindex XZ-compressed dir files, reading
 @cindex Bzipped dir files, reading
+@cindex Lzip-compressed dir files, reading
 @cindex LZMA-compressed dir files, reading
 @cindex Dir files, compressed
 If any input file is compressed with @code{gzip} (@pxref{Top,,, gzip,
@@ -19167,8 +19227,8 @@ And if @var{dir-file} is compressed, @code{install-info} also
 automatically leaves it compressed after writing any changes.  If
 @var{dir-file} itself does not exist, @code{install-info} tries to
 open @file{@var{dir-file}.gz}, @file{@var{dir-file}.xz},
-@file{@var{dir-file}.bz2}, and @file{@var{dir-file}.lzma}, in that
-order.
+@file{@var{dir-file}.bz2}, @file{@var{dir-file}.lz}, and
+@file{@var{dir-file}.lzma}, in that order.
 
 Options:
 
@@ -19367,15 +19427,19 @@ Display version information and exit successfully.
 @option{--html} option, it will generate HTML, for web browsers and
 other programs.  This chapter gives some details on such HTML output.
 
+@command{makeinfo} has many user-definable customization variables
+with which you can influence the HTML output.  @xref{Customization
+Variables}.
+
 @command{makeinfo} can also produce output in XML and Docbook formats,
 but we do not as yet describe these in detail.  @xref{Output Formats},
 for a brief overview of all the output formats.
 
 @menu
-* HTML Translation::            Details of the HTML output.
-* HTML Splitting::              How HTML output is split.
-* HTML CSS::                    Influencing HTML output with Cascading Style Sheets.
-* HTML Xref::                   Cross references in HTML output.
+* HTML Translation::       Details of the HTML output.
+* HTML Splitting::         How HTML output is split.
+* HTML CSS::               Influencing HTML output with Cascading Style Sheets.
+* HTML Xref::              Cross references in HTML output.
 @end menu
 
 
@@ -19498,8 +19562,8 @@ influencing the display of HTML documents: see
 @uref{http://www.w3.org/Style/CSS/}.
 
 By default, @command{makeinfo} includes a few simple CSS commands to
-better implement the appearance of some of the environments.  Here are
-two of them, as an example:
+better implement the appearance of some Texinfo environments.  Here
+are two of them, as an example:
 
 @example
 pre.display @{ font-family:inherit @}
@@ -19520,7 +19584,7 @@ You can influence the CSS in the HTML output with two
 @pindex texinfo-bright-colors.css
 @cindex Visualizing Texinfo CSS
 The option @option{--css-ref=@var{url}} adds to each output HTML file
-a @samp{<link>} tag referencing a CSS at the given @var{url}. This
+a @samp{<link>} tag referencing a CSS at the given @var{url}.  This
 allows using external style sheets.  You may find the file
 @file{texi2html/examples/texinfo-bright-colors.css} useful for
 visualizing the CSS elements in Texinfo output.
@@ -19544,7 +19608,7 @@ normal definitions.  (Technical exception: an @samp{@@charset}
 directive may precede the @samp{@@import}'s.  This does not alter
 @command{makeinfo}'s behavior, it just copies the @samp{@@charset} if
 present.)  Comments in CSS files are delimited by @samp{/* ... */}, as
-in C.  An @samp{@@import} directive must be in one of these two forms:
+in C@.  An @samp{@@import} directive must be in one of these two forms:
 
 @example
 @@import url(http://example.org/foo.css);
@@ -19586,6 +19650,10 @@ meaning of the CSS file in any way; it just looks for the special
 @samp{@@} and @samp{;} characters and blindly copies the text into the
 output.  Comments in the CSS file may or may not be included in the
 output.
+
+In addition to the possibilities offered by CSS, @command{makeinfo}
+has many user-definable customization variables with which you can
+influence the HTML output.  @xref{Customization Variables}.
 
 
 @node HTML Xref
@@ -19921,7 +19989,7 @@ the first two would nearly always be zeros.)
 This method works fine if the node name consists mostly of ASCII
 characters and contains only few 8-bit ones. If the document is
 written in a language whose script is not based on the Latin alphabet
-(such as, e.g. Ukrainian), it will create file names consisting
+(for example, Ukrainian), it will create file names consisting
 entirely of @samp{_@var{xxxx}} notations, which is inconvenient and
 all but unreadable.
 
@@ -20381,7 +20449,7 @@ Represent a single ``click'' in a GUI@.  Used within
 @code{@@clicksequence}.  @xref{Click Sequences}.
 
 @item @@clicksequence@{@var{action} @@click@{@} @var{action}@}
-Represent a sequence of clicks in a GUI.  @xref{Click Sequences}.
+Represent a sequence of clicks in a GUI@.  @xref{Click Sequences}.
 
 @item @@clickstyle @@@var{cmd}
 Execute @@@var{cmd} for each @code{@@click}; the default is
@@ -22113,7 +22181,7 @@ and other version control systems, which expand it into a string such
 as:
 
 @example
-$Id: texinfo.txi,v 1.540 2013/02/17 00:19:12 karl Exp $
+$Id: texinfo.txi 5232 2013-03-11 18:31:12Z karl $
 @end example
 
 (This is potentially useful in all sources that use version control,
@@ -22175,9 +22243,10 @@ pages, you should include the standard FSF cover texts (@pxref{License
 Notices for Documentation,,, maintain, GNU Maintainer Information}).
 
 @item
-For documents that express your personal views, feelings or experiences,
-it is more appropriate to use a license permitting only verbatim
-copying, rather than the FDL.  @xref{Verbatim Copying License}.
+For documents that express your personal views, feelings or
+experiences, it is more appropriate to use a license permitting only
+verbatim copying, rather than the FDL@.  @xref{Verbatim Copying
+License}.
 
 @end itemize
 
