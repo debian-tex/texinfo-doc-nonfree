@@ -1,5 +1,5 @@
 \input texinfo.tex    @c -*-texinfo-*-
-@comment $Id: info-stnd.texi,v 1.39 2013/01/20 18:06:37 karl Exp $
+@comment $Id: info-stnd.texi 5191 2013-02-23 00:11:18Z karl $
 @c We must \input texinfo.tex instead of texinfo, otherwise make
 @c distcheck in the Texinfo distribution fails, because the texinfo Info
 @c file is made first, and texi2dvi must include . first in the path.
@@ -217,10 +217,11 @@ looks for it with a number of known extensions of Info files, namely
 @file{.info}, @file{-info}, @file{/index}, and @file{.inf}.  For every
 known extension, Info looks for a compressed file, if a regular file
 isn't found.  Info supports files compressed with @code{gzip},
-@code{xz}, @code{bzip2}, @code{lzma}, @code{compress} and @code{yabba}
-programs, assumed to have @file{.z}, @file{.gz}, @file{.xz},
-@file{.bz2}, @file{.lzma}, @file{.Z}, or @file{.Y} extensions,
-possibly after one of the known Info files extensions.
+@code{xz}, @code{bzip2}, @code{lzip}, @code{lzma}, @code{compress} and
+@code{yabba} programs, assumed to have @file{.z}, @file{.gz},
+@file{.xz}, @file{.bz2}, @file{.lz}, @file{.lzma}, @file{.Z}, or
+@file{.Y} extensions, possibly after one of the known Info files
+extensions.
 
 On MS-DOS, Info allows for the Info extension, such as @code{.inf},
 and the short compressed file extensions, such as @file{.z} and
