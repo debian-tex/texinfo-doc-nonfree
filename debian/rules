@@ -31,7 +31,7 @@ install-stamp: DH_OPTIONS=
 install-stamp: build-stamp
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
 	# install info documentation
 	dh_installinfo texinfo texinfo-1 texinfo-2 texinfo-3 info.info info-stnd.info
 	# install the html documentation
