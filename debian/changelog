@@ -1,3 +1,10 @@
+texinfo-doc-nonfree (5.1-3) unstable; urgency=low
+
+  * add dummy prerm script to avoid upgrade failures (Closes: #718824)
+    (thanks to Andreas Beckmann)
+
+ -- Norbert Preining <preining@debian.org>  Tue, 06 Aug 2013 10:04:13 +0900
+
 texinfo-doc-nonfree (5.1-2) unstable; urgency=low
 
   * upload to unstable

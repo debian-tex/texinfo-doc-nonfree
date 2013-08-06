@@ -1,0 +1,7 @@
+#!/bin/sh
+set -e
+# dummy empty prerm script to avoid upgrade failures in the old
+# maintainer script, see #718824
+# this file can be removed after jessie was released
+#DEBHELPER#
+
