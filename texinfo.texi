@@ -1,7 +1,5 @@
 \input texinfo.tex    @c -*-texinfo-*-
-@c $Id: texinfo.txi 5232 2013-03-11 18:31:12Z karl $
-@c Ordinarily, Texinfo files have the extension .texi.  But texinfo.texi
-@c clashes with texinfo.tex on 8.3 filesystems, so we use texinfo.txi.
+@c $Id: texinfo.texi 5381 2013-09-26 23:03:58Z karl $
 
 @c Everything between the start/end of header lines will be passed by
 @c Emacs's {texinfo,makeinfo}-format region commands.  See the `start of
@@ -9,10 +7,7 @@
 @c %**start of header
 
 @c makeinfo and texinfo.tex ignore all text before @setfilename.
-@c
-@c Ordinarily, the setfilename argument ends with .info.  But
-@c texinfo.info-13 is too long for 14-character filesystems.
-@setfilename texinfo
+@setfilename texinfo.info
 
 @c Automake automatically updates version.texi to @set VERSION and
 @c @set UPDATED to appropriate values.
@@ -972,8 +967,8 @@ graphics, and supporting arbitrary scaling.  It is intended to be
 platform-independent and easily viewable, among other design goals;
 @uref{http://en.wikipedia.org/wiki/Portable_Document_Format} and
 @uref{http://tug.org/TUGboat/tb22-3/tb72beebe-pdf.pdf} have some
-background.  By default, Texinfo uses the @command{pdftex} program, a
-variant of @TeX{}, to output PDF; see
+background.  By default, Texinfo uses the @command{pdftex} program, an
+extension of @TeX{}, to output PDF; see
 @uref{http://tug.org/applications/pdftex}.  @xref{PDF Output}.
 
 @item Docbook
@@ -1304,17 +1299,6 @@ an @samp{@@} character in front of it, like this: @samp{@@@@},
 @samp{@@@{}, and @samp{@@@}}.
 
 @item
-@cindex Paragraph separator
-@cindex Blank lines, as paragraph separator
-@cindex Newlines, as blank lines
-Separate paragraphs with one or more blank lines.  Currently Texinfo
-only recognizes newline characters as end of line, not the CRLF
-sequence used on some systems; so a @dfn{blank line} means exactly two
-consecutive newlines.  Sometimes blank lines are useful or convenient
-in other cases as well; you can use the @code{@@noindent} to inhibit
-paragraph indentation if required (@pxref{@t{@@noindent}}).
-
-@item
 Texinfo supports the usual quotation marks used in English and in
 other languages; see @ref{Inserting Quotation Marks}.
 
@@ -1333,6 +1317,38 @@ used in compound words.  For display on the screen, Info reduces three
 hyphens to two and two hyphens to one (not transitively!).  Of course,
 any number of hyphens in the source remain as they are in literal
 contexts, such as @code{@@code} and @code{@@example}.
+
+@item
+@cindex Form feed characters
+@cindex @kbd{CTRL-l}
+Form feed (@kbd{CTRL-l}) characters in the input are handled as
+follows:
+
+@table @asis
+@item PDF/DVI
+In normal text, treated as ending any open paragraph; essentially
+ignored between paragraphs.
+
+@item Info
+Output as-is between paragraphs (their most common use); in other
+contexts, they may be treated as regular spaces (and thus consolidated
+with surrounding whitespace).
+
+@item HTML
+Written as a numeric entity except contexts where spaces are ignored;
+for example, in @samp{@@footnote@{ ^L foo@}}, the form feed is
+ignored.
+
+@item XML
+Keep them everywhere; in attributes, escaped as @samp{\f}; also,
+@samp{\} is escaped as @samp{\\} and newline as @samp{\n}.
+
+@item Docbook
+Completely removed, as they are not allowed.
+@end table
+
+As you can see, because of these differing requirements of the output
+formats, it's not possible to use form feeds completely portably.
 
 @item
 @cindex Tabs; don't use!
@@ -2418,7 +2434,7 @@ Insert @code{@@node} lines before the @code{@@chapter},
 missing throughout a region in a Texinfo file.
 
 With an argument (@kbd{C-u} as prefix argument, if interactive), the
-@code{texinfo-insert-node-lines} command not only inserts
+command @code{texinfo-insert-node-lines} not only inserts
 @code{@@node} lines but also inserts the chapter or section titles as
 the names of the corresponding nodes.  In addition, it inserts the
 titles as node names in pre-existing @code{@@node} lines that lack
@@ -3101,7 +3117,7 @@ description in the @samp{<head>} part
 
 When the title page is used in the output, the title in the
 @code{@@settitle} command does not affect the title as it appears on
-the title page.  Thus, the two do not need not match exactly.  A
+the title page.  Thus, the two do not need not to match exactly.  A
 practice we recommend is to include the version or edition number of
 the manual in the @code{@@settitle} title; on the title page, the
 version number generally appears as an @code{@@subtitle} so it would
@@ -4529,8 +4545,28 @@ just as with @code{@@chapter}.
 Texinfo also provides a command @code{@@centerchap}, which is analogous
 to @code{@@unnumbered}, but centers its argument in the printed and HTML
 outputs.  This kind of stylistic choice is not usually offered by
-Texinfo.
+Texinfo.  It may be suitable for short documents.
 @c but the Hacker's Dictionary wanted it, before they quit Texinfo.
+
+@cindex Docbook and prefatory sections
+@cindex Preface, etc., and Docbook
+With @code{@@unnumbered}, if the name of the associated node is one of
+these English words (case-insensitive):
+
+@example
+Acknowledgements  Colophon  Dedication  Preface
+@end example
+
+@cindex @code{<acknowledgements>} Docbook tag
+@cindex @code{<colophon>} Docbook tag
+@cindex @code{<dedication>} Docbook tag
+@cindex @code{<preface>} Docbook tag
+@cindex @code{<chapter>} Docbook tag
+@cindex @code{<title>} Docbook tag
+@noindent then the Docbook output uses corresponding special tags
+(@code{<preface>}, etc.)@: instead of the default @code{<chapter>}.
+The argument to @code{@@unnumbered} itself can be anything, and is
+output as the following @code{<title>} text as usual.
 
 
 @node @t{@@majorheading @@chapheading}
@@ -4994,9 +5030,11 @@ of their names.  This way, it is easy to use automatic name completion in
 Info.
 
 @item
-By convention, node names are capitalized just as they would be for
-section or chapter titles.  In this manual, initial and significant
-words are capitalized; others are not.
+Conventionally, node names are capitalized in the same way as section
+and chapter titles.  In this manual, initial and significant words are
+capitalized; others are not.  In other manuals, just initial words and
+proper nouns are capitalized.  Either way is fine; we recommend just
+being consistent.
 @end itemize
 
 The pointers from a given node enable you to reach other nodes and
@@ -5118,11 +5156,11 @@ normal text.  Cross references should use @code{@@TeX@{@}} just as the
 node name does.
 
 For Info and HTML output, especially, it is necessary to expand
-commands to some sequence of characters; for instance,
+commands to some sequence of plain characters; for instance,
 @code{@@TeX@{@}} expands to the three letters @samp{TeX} in the Info
-node name.  (However, cross references to the node should not take the
+node name.  However, cross references to the node should not take the
 ``shortcut'' of using @samp{TeX}; stick to the actual node name,
-commands and all.)
+commands and all.
 
 Some commands do not make sense in node names; for instance,
 environments (e.g., @code{@@quotation}), commands that read a whole
@@ -5146,15 +5184,22 @@ an ad hoc way (the @option{--commands-in-node-names} option to
 @cindex Invalid characters in node names
 @cindex Node names, invalid characters in
 Unfortunately, you cannot reliably use periods, commas, or colons
-within a node name; these confuse the Info reader.  Also, a node name
-may not start with a left parenthesis preceding a right parenthesis,
-as in @code{(not)allowed}, since this syntax is used to specify an
-external manual.  (Perhaps these limitations will be removed some day.)
+within a node name; these can confuse the Info reader.  Also, a node
+name may not start with a left parenthesis preceding a right
+parenthesis, as in @code{(not)allowed}, since this syntax is used to
+specify an external manual.  (Perhaps these limitations will be
+removed some day.)
 
-If you insist on using these characters in node names, accepting the
-resulting substandard Info output, in order not to confuse the Texinfo
-processors, you must still escape those characters, by using either
-special insertions (@pxref{Inserting a Comma}) or @code{@@asis}
+@command{makeinfo} warns about such problematic usage in node names,
+menu items, and cross references.  If you don't want to see the
+warnings, you can set the customization variable
+@code{INFO_SPECIAL_CHARS_WARNING} to @samp{0} (@pxref{Other
+Customization Variables}).
+
+Also, if you insist on using these characters in node names (accepting
+the resulting substandard Info output), in order not to confuse the
+Texinfo processors you must still escape those characters, by using
+either special insertions (@pxref{Inserting a Comma}) or @code{@@asis}
 (@pxref{@t{@@asis}}).  For example:
 
 @example
@@ -5165,15 +5210,14 @@ As an example of avoiding the special characters, the following is a
 section title in this manual:
 
 @smallexample
-@@code@{@@@@unnumberedsec@}, @@code@{@@@@appendixsec@}, @@code@{@@@@heading@}
+@@section @@code@{@@@@unnumbered@}, @@code@{@@@@appendix@}: ...
 @end smallexample
 
 @noindent
-But the corresponding node name lacks the commas (and the @code{@@}'s,
-but that is historical):
+But the corresponding node name lacks the commas and the subtitle:
 
 @smallexample
-unnumberedsec appendixsec heading
+@@node @t{@@unnumbered @@appendix}
 @end smallexample
 
 @cindex Case in node name
@@ -5195,7 +5239,7 @@ single space.  For example:
 
 @noindent all define the same node, namely @samp{foo bar}.  References
 to the node should all use that name, with no leading or trailing
-spaces a single internal space.
+spaces, and a single internal space.
 @end itemize
 
 
@@ -5571,14 +5615,14 @@ Emacs Texinfo mode updating commands work only to create menus of
 subordinate nodes in a hierarchically structured document.  It is much
 better to use cross references to refer to arbitrary nodes.
 
-In the past, we recommended using an @samp{@@heading} command within
-an @code{@@ifinfo} conditional instead of the normal sectioning
-commands after a very short node with a menu.  This had the advantage
-of making the printed output look better, because there was no very
-short text between two headings on the page.  But this also does not
-work with @command{makeinfo}'s implicit pointer creation, and it also
-makes the XML output incorrect, since it does not reflect the true
-document structure.  So, we no longer recommend this.
+Years ago, we recommended using an @samp{@@heading} command within an
+@code{@@ifinfo} conditional instead of the normal sectioning commands
+after a very short node with a menu.  This had the advantage of making
+the printed output look better, because there was no very short text
+between two headings on the page.  But it does not work with
+@command{makeinfo}'s implicit pointer creation, and it also makes the
+XML output incorrect, since it does not reflect the true document
+structure.  So, we no longer recommend this.
 
 
 @node Writing a Menu
@@ -5604,15 +5648,16 @@ Larger Units of Text
 @end group
 @end example
 
+@cindex Spaces, in menus
 In a menu, every line that begins with an @w{@samp{* }} is a @dfn{menu
 entry}.  (Note the space after the asterisk.)  A line that does not
 start with an @w{@samp{* }} may also appear in a menu.  Such a line is
-not a menu entry but is a menu comment line that appears in the Info
-file.  In the example above, the line @samp{Larger Units of Text} is a
-menu comment line; the two lines starting with @w{@samp{* }} are menu
-@cindex Spaces, in menus
-entries.  Space characters in a menu are preserved as-is; this allows
-you to format the menu as you wish.
+not a menu entry but rather a @dfn{menu comment} line that appears in
+the Info file.  In the example above, the line @samp{Larger Units of
+Text} is such a menu comment line; the two lines starting with
+@w{@samp{* }} are menu entries.  Space characters in a menu are
+preserved as-is in the Info output; this allows you to format the menu
+as you wish.
 
 @opindex accesskey@r{, in HTML output of menus}
 In the HTML output from @command{makeinfo}, the @code{accesskey}
@@ -5648,9 +5693,16 @@ next section for one more possibility):
 * @var{menu-entry-name}: @var{node-name}.   @var{description}
 @end example
 
-Follow the menu entry name with a single colon and follow the node name
-with tab, comma, newline, or the two characters period and space
+Follow the menu entry name with a single colon and follow the node
+name with tab, comma, newline, or the two characters period and space
 (@samp{. }).
+
+@command{makeinfo} warns when the text of a menu item (and node names
+and cross references) contains a problematic construct that will
+interfere with its parsing in Info.  If you don't want to see the
+warnings, you can set the customization variable
+@code{INFO_SPECIAL_CHARS_WARNING} to @samp{0} (@pxref{Other
+Customization Variables}).
 
 In Info, a user selects a node with the @kbd{m} (@code{Info-menu})
 command.  The menu entry name is what the user types after the @kbd{m}
@@ -5693,7 +5745,7 @@ instead of
 * Name: Name.                   @var{description}
 @end example
 
-You should indeed use the node name for the menu entry name whenever
+We recommend using the node name for the menu entry name whenever
 possible, since it reduces visual clutter in the menu.
 
 
@@ -5840,6 +5892,7 @@ places to which cross references can refer.
 * @t{@@url}::                        How to refer to a uniform resource locator.
 * @t{@@cite}::                       How to refer to books not in the Info system.
 @end menu
+
 
 @node References
 @section What References Are For
@@ -6026,6 +6079,13 @@ described separately following the description of @code{@@xref}.
 Write a node name in a cross reference in exactly the same way as in
 the @code{@@node} line, including the same capitalization; otherwise, the
 formatters may not find the reference.
+
+@command{makeinfo} warns when the text of a cross reference (and node
+names and menu items) contains a problematic construct that will
+interfere with its parsing in Info.  If you don't want to see the
+warnings, you can set the customization variable
+@code{INFO_SPECIAL_CHARS_WARNING} to @samp{0} (@pxref{Other
+Customization Variables}).
 
 
 @node @t{@@xref}
@@ -6245,9 +6305,14 @@ See Section 5.2 [Electrical Effects], page 57, for more info.
 @end quotation
 
 @noindent
-in a printed manual.
-(Note that in the preceding example the closing brace is followed by a
-comma, and then by the clause, which is followed by a period.)
+in a printed manual.  (Note that in the preceding example the closing
+brace is followed by a comma, and then by the clause, which is
+followed by a period.)
+
+The second argument to cross references must observe some of the
+restrictions for node names (@pxref{Node Line Requirements}).  The
+most common issue is that colons cannot be used, since that interferes
+with the parsing of the Info file.
 
 
 @node Three Arguments
@@ -6261,12 +6326,7 @@ use initial uppercase letters so it will be easier to read when the
 reference is printed.  Use a third argument when the node name is
 unsuitable because of syntax or meaning.
 
-The third argument to the xref commands must observe the same
-restrictions as node names described in @ref{Node Line Requirements}.
-The issue you're most likely to run into is that commas, periods, and
-colons cannot be used.
-
-Also, remember to write a comma or period after the closing brace of an
+Remember to write a comma or period after the closing brace of an
 @code{@@xref} to terminate the cross reference.  In the following
 examples, a clause follows a terminating comma.
 
@@ -6336,22 +6396,27 @@ See Section 5.2 [Thunder and Lightning], page 57, for details.
 @noindent
 in a printed manual.
 
+The third argument to cross references must observe some of the
+restrictions for node names (@pxref{Node Line Requirements}).  The
+most common issue is that colons cannot be used, since that interferes
+with the parsing of the Info file.
+
 As a practical matter, it is often best to write cross references with
 just the first argument if the node name and the section title are the
 same (or nearly so), and with the first and third arguments only if the
 node name and title are different.
 
 @findex xrefautomaticsectiontitle
-If you want the section title to be used by default instead of
-node names in cross references (an explicitly specified third argument
-still takes precedence), Texinfo can do this automatically:
+Texinfo offers a setting to use the section title instead of node
+names by default in cross references (an explicitly specified third
+argument still takes precedence):
 
 @example
 @@xrefautomaticsectiontitle on
 @end example
 
 Typically this line would be given near the beginning of the document
-and used for the whole thing.  But you can turn it off if you want
+and used for the whole manual.  But you can turn it off if you want
 (@code{@@xrefautomaticsectiontitle off}), for example, if you're
 including some other sub-document that doesn't have suitable section
 names.
@@ -6837,8 +6902,8 @@ produces a link you can follow.
 
 @anchor{url} @code{@@url} is a synonym for @code{@@uref}.
 (Originally, @code{@@url} had the meaning of @code{@@indicateurl}
-(@pxref{@t{@@indicateurl}}), but in actual practice it was almost
-always misused.  So we've changed the meaning.)
+(@pxref{@t{@@indicateurl}}), but in practice it was almost always
+misused.  So we've changed the meaning.)
 
 The second argument, if specified, is the text to display (the default
 is the url itself); in Info and DVI output, but not in HTML output, the
@@ -6996,23 +7061,11 @@ program.  Also, you can emphasize text, in several different ways.
 @cindex Highlighting text
 @cindex Indicating commands, definitions, etc.
 
-Texinfo has commands for indicating just what kind of object a piece of
-text refers to.  For example, metasyntactic variables are marked by
-@code{@@var}, and code by @code{@@code}.  Since the pieces of text are
-labeled by commands that tell what kind of object they are, it is easy
-to change the way the Texinfo formatters prepare such text.  (Texinfo is
-an @emph{intentional} formatting language rather than a @emph{typesetting}
-formatting language.)
-
-For example, in a printed manual,
-code is usually illustrated in a typewriter font;
-@code{@@code} tells @TeX{} to typeset this text in this font.  But it
-would be easy to change the way @TeX{} highlights code to use another
-font, and this change would not affect how keystroke examples are
-highlighted.  If straight typesetting commands were used in the body
-of the file and you wanted to make a change, you would need to check
-every single occurrence to make sure that you were changing code and
-not something else that should not be changed.
+Texinfo has commands for indicating just what kind of object a piece
+of text refers to.  For example, email addresses are marked by
+@code{@@email}; that way, the result can be a live link to send email
+when the output format supports it.  If the email address was simply
+marked as ``print in a typewriter font'', that would not be possible.
 
 @menu
 * Useful Highlighting::         Highlighting provides useful information.
@@ -7318,6 +7371,8 @@ Here is a list of the recommended names for keys:
 @cindex Keys, recommended names
 @cindex Names recommended for keys
 @cindex Abbreviations for keys
+@cindex Control keys, specifying
+@cindex Meta keys, specifying
 
 @quotation
 @table @t
@@ -8245,16 +8300,21 @@ This is
 a foo.
 @end quotation
 
-If the @code{@@quotation} argument is exactly one of these English words:
+If the @code{@@quotation} argument is one of these English words
+(case-insensitive):
 
 @example
 Caution  Important  Note  Tip  Warning
 @end example
 
+@cindex @code{<caution>} Docbook tag
+@cindex @code{<important>} Docbook tag
 @cindex @code{<note>} Docbook tag
+@cindex @code{<tip>} Docbook tag
+@cindex @code{<warning>} Docbook tag
 @cindex @code{<blockquote>} HTML tag
 @noindent then the Docbook output uses corresponding special tags
-(@code{<note>}, etc.) instead of the default @code{<blockquote>}.
+(@code{<note>}, etc.)@: instead of the default @code{<blockquote>}.
 HTML output always uses @code{<blockquote>}.
 
 If the author of the quotation is specified in the @code{@@quotation}
@@ -9859,10 +9919,11 @@ reference to @file{@var{filename}.jpg} anyway.
 @cindex SVG images, used in Docbook
 For Docbook, @code{makeinfo} outputs references to
 @file{@var{filename}.eps}, @file{@var{filename}.gif}
-@file{@var{filename}.jpg}, @file{@var{filename}.pdf},
-@file{@var{filename}.png} and @file{@var{filename}.svg}, for every
-file found.  Als, @file{@var{filename}.txt} is included verbatim, if
-present.
+@file{@var{filename}.jpeg}, @file{@var{filename}.jpg},
+@file{@var{filename}.pdf}, @file{@var{filename}.png} and
+@file{@var{filename}.svg}, for every file found.  Also,
+@file{@var{filename}.txt} is included verbatim, if present.  (The
+subsequent Docbook processor is supposed to choose the appropriate one.)
 
 @item
 For Info and HTML output, @code{makeinfo} uses the optional fifth
@@ -13684,11 +13745,11 @@ language support is welcome.
 @code{@@documentlanguage} also changes @TeX{}'s current hyphenation
 patterns, if the @TeX{} program being run has the necessary support
 included.  This will generally not be the case for @command{tex}
-itself, but will often be the case for recent distributions of
-extended @TeX{} programs @command{etex} (DVI output) and
-@command{pdftex} (PDF output), such as @TeX{} Live 2008.
-@command{texi2dvi} will use the extended @TeX{}s if they are available
-(@pxref{Format with @t{texi2dvi}}).
+itself, but will usually be the case for up-to-date distributions of
+the extended @TeX{} programs @command{etex} (DVI output) and
+@command{pdftex} (PDF output).  @command{texi2dvi} will use the
+extended @TeX{}s if they are available (@pxref{Format with
+@t{texi2dvi}}).
 
 In September 2006, the W3C Internationalization Activity released a
 new recommendation for specifying languages:
@@ -14121,8 +14182,8 @@ in the remainder of the document.  Thus, the Texinfo processors
 recognize and even execute, to some extent, the contents of the raw
 regions, regardless of the final output format.  Therefore, specifying
 changes that globally affect the document inside a raw region leads to
-unpredictable and generally undesirable behavior.  For example,
-giving the @code{@@kbdinputstyle} command inside a raw region.
+unpredictable and generally undesirable behavior.  For example, it
+using the @code{@@kbdinputstyle} command inside a raw region is undefined.
 
 The remedy is simple: don't do that.  Use the raw formatter commands
 for their intended purpose, of providing material directly in the
@@ -14133,8 +14194,9 @@ specifications for different output formats, use the
 
 
 @node Inline Conditionals
-@section Inline Conditionals: @code{@@inline}, @code{@@inlineraw}
+@section Inline Conditionals: @code{@@inline}, @code{@@inlineifelse}, @code{@@inlineraw}
 @findex inlinefmt
+@findex inlinefmtifelse
 @findex inlineraw
 @cindex Inline conditionals
 @cindex Conditional commands, inline
@@ -14142,17 +14204,27 @@ specifications for different output formats, use the
 @cindex Newlines, avoiding in conditionals
 @cindex Whitespace, controlling in conditionals
 
-Texinfo provides two conditional commands with arguments given within
-braces:
+Texinfo provides a set of conditional commands with arguments given
+within braces:
 
 @table @code
 @item @@inlinefmt@{@var{format}, @var{text}@}
 Process the Texinfo @var{text} if @var{format} output is being
 generated.
 
+@item @@inlinefmtifelse@{@var{format}, @var{then-text}, @var{else-text}@}
+Process the Texinfo @var{then-text} if @var{format} output is being
+generated; otherwise, process @var{else-text}.
+
 @item @@inlineraw@{@var{format}, @var{text}@}
 Similar, but for raw @var{text} (@pxref{Raw Formatter Commands}).
 @end table
+
+The supported @var{format} names are:
+
+@example
+docbook  html  info  plaintext  tex  xml
+@end example
 
 For example,
 
@@ -14172,21 +14244,30 @@ For example,
 (environment) case.
 
 In these commands, whitespace is ignored after the comma separating
-the two arguments, as usual, but is @emph{not} ignored at the end of
+the arguments, as usual, but is @emph{not} ignored at the end of
 @var{text}.
 
-In the case of @code{@@inlineraw}, to insert a literal at sign, left
-brace, or right brace, you must use the alphabetic commands
-@code{@@atchar@{@}} (@pxref{Inserting an Atsign}), and
-@code{@@lbracechar@{@}} or @code{@@rbracechar@{@}} (@pxref{Inserting
-Braces}), or the parsing will become confused.  (By the way, it is not
-necessary to use @code{@@comma@{@}}, since these commands always have
-exactly two arguments, so a @samp{,} cannot be mistaken for an
-argument separator.)
+To insert a literal at sign, left brace, or right brace in one of the
+arguments, you must use the alphabetic commands @code{@@atchar@{@}}
+(@pxref{Inserting an Atsign}), and @code{@@lbracechar@{@}} or
+@code{@@rbracechar@{@}} (@pxref{Inserting Braces}), or the parsing
+will become confused.
+
+With @code{@@inlinefmtifelse}, it is also necessary to use
+@code{@@comma@{@}} to avoid mistaking a @samp{,} in the text for the
+delimiter.  With @code{@@inlinefmt} and @code{@@inlineraw},
+@code{@@comma@{@}} is not required (though it's fine to use it), since
+these commands always have exactly two arguments.
+
+For @TeX{}, the processed @var{text} cannot contain newline-delimited
+commands.  Text to be ignored (i.e., for non-@TeX{}) can, though.
+
+Two other @code{@@inline...} conditionals complement the
+@code{@@ifset} and @code{@@ifclear} commands; see the next section.
 
 
 @node @t{@@set @@clear @@value}
-@section @code{@@set}, @code{@@clear}, and @code{@@value}
+@section Flags: @code{@@set}, @code{@@clear}, conditionals, and @code{@@value}
 
 @anchor{set clear value}@c old name
 You can direct the Texinfo formatting commands to format or ignore parts
@@ -14208,15 +14289,23 @@ If @var{flag} is set, text through the next @code{@@end ifset} command
 is formatted.  If @var{flag} is clear, text through the following
 @code{@@end ifset} command is ignored.
 
+@item @@inlineifset@{@var{flag}, @var{text}@}
+Brace-delimited version of @code{@@ifset}.
+
 @item @@ifclear @var{flag}
 If @var{flag} is set, text through the next @code{@@end ifclear} command
 is ignored.  If @var{flag} is clear, text through the following
 @code{@@end ifclear} command is formatted.
+
+@item @@inlineifclear@{@var{flag}, @var{text}@}
+Brace-delimited version of @code{@@ifclear}.
+
 @end table
 
 @menu
 * @t{@@set @@value}::                 Expand a flag variable to a string.
 * @t{@@ifset @@ifclear}::             Format a region if a flag is set.
+* @t{@@inlineifset @@inlineifclear}:: Brace-delimited flag conditionals.
 * @t{@@value} Example::              An easy way to update edition information.
 @end menu
 
@@ -14396,6 +14485,33 @@ command looks like this:
 @end example
 
 
+@node @t{@@inlineifset @@inlineifclear}
+@subsection @code{@@inlineifset} and @code{@@inlineifclear}
+
+@findex inlineifset
+@findex inlineifclear
+@cindex Flag conditionals, brace-delimited
+@cindex Brace-delimited flag conditionals
+
+@code{@@inlineifset} and @code{@@inlineifclear} provide
+brace-delimited alternatives to the @code{@@ifset} and
+@code{@@ifclear} forms, similar to the other @code{@@inline...}
+Commands (@pxref{Inline Conditionals}).  The same caveats about
+argument parsing given there apply here too.
+
+@table @code
+@item @@inlineifset@{@var{var}, @var{text}@}
+Process the Texinfo @var{text} if the flag @var{var} is defined.
+
+@item @@inlineifclear@{@var{var}, @var{text}@}
+Process the Texinfo @var{text} if the flag @var{var} is not defined.
+@end table
+
+Except for the syntax, their general behavior and purposes is the same
+as with @code{@@ifset} and @code{@@ifclear}, described in the previous
+section.
+
+
 @node @t{@@value} Example
 @subsection @code{@@value} Example
 
@@ -14537,7 +14653,7 @@ this:
 @example
 @@ifset txicommandconditionals
 @@ifcommandnotdefined foobarnode
-(Good, @@foobarnode is not defined.)
+(Good, @samp{@@foobarnode} is not defined.)
 @@end ifcommandnotdefined
 @@end ifset
 @end example
@@ -14549,9 +14665,9 @@ available.
 We recommend avoiding these tests whenever possible---which is usually
 the case.  For many software packages, it is reasonable for all
 developers to have a given version of Texinfo (or newer) installed,
-and thus no reason to worry about older versions.  (It is simple to
-download and install the Texinfo source; it does not have any
-problematic dependencies.)
+and thus no reason to worry about older versions.  (It is
+straightforward for anyone to download and install the Texinfo source;
+it does not have any problematic dependencies.)
 
 The issue of Texinfo versions does not generally arise for end-users.
 With properly distributed packages, users need not process the Texinfo
@@ -14617,7 +14733,8 @@ for nesting purposes.
 @cindex Texinfo commands, defining new
 @cindex User-defined Texinfo commands
 
-Texinfo provides several ways to define new commands:
+Texinfo provides several ways to define new commands (in all cases,
+it's not recommended to try redefining existing commands):
 
 @itemize @bullet
 @item
@@ -14640,8 +14757,8 @@ customized output for all non-@TeX{} output formats.
 
 @end itemize
 
-Most generally of all, not just for defining new commands, it is
-possible to invoke an external macro processor and have Texinfo
+Most generally of all (not just for defining new commands), it is
+possible to invoke any external macro processor and have Texinfo
 recognize so-called @code{#line} directives for error reporting.
 
 If you want to do simple text substitution, @code{@@set} and
@@ -16363,16 +16480,15 @@ Euro font, if it is not already installed.  @xref{@t{@@euro}}.
 @pindex texinfo.cnf @r{installation}
 @cindex Customizing of @TeX{} for Texinfo
 @cindex Site-wide Texinfo configuration file
-Optionally, you may create an additional @file{texinfo.cnf}, and
-install it as well.  This file is read by @TeX{} when the
-@code{@@setfilename} command is executed
-(@pxref{@t{@@setfilename}}).  You can put any commands you like
-there, according to local site-wide conventions.  They will be read by
-@TeX{} when processing any Texinfo document.  For example, if
-@file{texinfo.cnf} contains the line @samp{@@afourpaper} (@pxref{A4
-Paper}), then all Texinfo documents will be processed with that page
-size in effect.  If you have nothing to put in @file{texinfo.cnf}, you
-do not need to create it.
+Optionally, you may create a file @file{texinfo.cnf} for site
+configuration.  This file is read by @TeX{} when the
+@code{@@setfilename} command is executed (@pxref{@t{@@setfilename}}).
+You can put any commands you like there, according to local site-wide
+conventions.  They will be read by @TeX{} when processing any Texinfo
+document.  For example, if @file{texinfo.cnf} contains the line
+@samp{@@afourpaper} (@pxref{A4 Paper}), then all Texinfo documents
+will be processed with that page size in effect.  If you have nothing
+to put in @file{texinfo.cnf}, you do not need to create it.
 
 @cindex Environment variable @code{TEXINPUTS}
 @vindex TEXINPUTS
@@ -16382,22 +16498,13 @@ you, you can specify the directories explicitly.  For
 file after the @code{\input} command.  Another way, that works for both
 @file{texinfo.tex} and @file{texinfo.cnf} (and any other file @TeX{}
 might read), is to set the @code{TEXINPUTS} environment variable in your
-@file{.cshrc} or @file{.profile} file.
+@file{.profile} or @file{.cshrc} file.
 
-Which you use of @file{.cshrc} or @file{.profile} depends on
+Whether you use @file{.profile} or @file{.cshrc} depends on
 whether you use a Bourne shell-compatible (@code{sh}, @code{bash},
 @code{ksh}, @dots{}) or C shell-compatible (@code{csh}, @code{tcsh})
-command interpreter.  The latter read the @file{.cshrc} file for
-initialization information, and the former read @file{.profile}.
+command interpreter, respeictvely.
 
-In a @file{.cshrc} file, you could use the following @code{csh} command
-sequence:
-
-@example
-setenv TEXINPUTS .:/home/me/mylib:
-@end example
-
-@need 1000
 In a @file{.profile} file, you could use the following @code{sh} command
 sequence:
 
@@ -16408,9 +16515,17 @@ export TEXINPUTS
 @end group
 @end example
 
+@need 1000
+While in a @file{.cshrc} file, you could use the following @code{csh}
+command sequence:
+
+@example
+setenv TEXINPUTS .:/home/me/mylib:
+@end example
+
+
 On MS-DOS/MS-Windows, you would say it like this@footnote{Note the use
-of the @samp{;} character, instead of @samp{:}, as directory separator
-on these systems.}:
+of the @samp{;} character as directory separator, instead of @samp{:}.}:
 
 @example
 @group
@@ -16721,8 +16836,9 @@ GNU GV, a @uref{http://www.gnu.org/software/gv/, Ghostscript-based PDF
 reader}.  (It can also preview PostScript documents.)
 
 @item
-A freely available standalone @uref{http://www.foolabs.com/xpdf/,
-PDF reader} for the X window system.
+@code{xpdf}, a freely available standalone
+@uref{http://www.foolabs.com/xpdf/, PDF reader} for the X window
+system.
 
 @item
 @uref{http://partners.adobe.com/asn/acrobat/sdk/public/docs/, PDF definition}.
@@ -16731,10 +16847,10 @@ PDF reader} for the X window system.
 
 At present, Texinfo does not provide @samp{@@ifpdf} or @samp{@@pdf}
 commands as for the other output formats, since PDF documents contain
-many internal links that would be hard or impossible to get right at
-the Texinfo source level.
+many internal low-level offsets and references that would be hard or
+impossible to get right at the Texinfo source level.
 
-PDF files require special software to be displayed, unlike the plain
+PDF files require dedicated software to be displayed, unlike the plain
 ASCII formats (Info, HTML) that Texinfo supports.  They also tend to
 be much larger than the DVI files output by @TeX{} by default.
 Nevertheless, a PDF file does define an actual typeset document in a
@@ -16810,13 +16926,13 @@ The rest of this chapter goes into the details.
 Above, we called @command{texi2any} ``the'' translator for Texinfo
 instead of just ``a'' translator, even though (of course) it's
 technically and legally possible for other implementations to be
-written.  The reason is that alternative implementations are highly
+written.  The reason is that alternative implementations are very
 likely to have subtle, or not-so-subtle, differences in behavior, and
 thus Texinfo documents would become dependent on the processor.
 Therefore, it is important to have a reference implementation that
 defines parts of the language not fully specified by the manual (often
 intentionally so).  It is equally important to have consistent
-command-line options and other behavior for processors.
+command-line options and other behavior for all processors.
 
 @cindex Tree representation of documents
 @cindex Syntax tree representation of documents
@@ -16824,13 +16940,13 @@ command-line options and other behavior for processors.
 For this reason, the once-independent @command{texi2html} Perl Texinfo
 processor was made compatible with the C implementation of
 @command{makeinfo}, to avoid continuing with two different
-implementations (@pxref{History}).  The current reference
-implementation, @command{texi2any}, inherited the design of
-customization and other features from @command{texi2html} (for more on
-@command{texi2html} compatibility, @pxref{@t{texi2html}}).
-However, @code{texi2any} is a full reimplementation: it constructs a
-tree-based representation of the input document for all back-ends to
-work from.
+implementations (@pxref{History}).  The current implementation,
+@command{texi2any}, serves as the reference implementation.  It
+inherited the design of customization and other features from
+@command{texi2html} (for more on @command{texi2html} compatibility,
+@pxref{@t{texi2html}}).  However, @code{texi2any} is a full
+reimplementation: it constructs a tree-based representation of the
+input document for all back-ends to work from.
 
 @cindex Texinfo language tests
 @cindex Tests, of Texinfo language
@@ -16841,12 +16957,12 @@ to parse Texinfo input to at least make use of these tests.
 @cindex Examples of using @command{texi2any}
 @findex Texinfo::Parser module
 The @command{texi2html} wrapper script (@pxref{@t{texi2html}})
-provides a simple example of calling @command{texi2any} from a shell
-script; it's in @file{util/texi2html} in the Texinfo sources.  More
-consequentially, @command{texi-elements-by-size} is an example Perl
-script using the @code{Texinfo::Parser} module interface; it's in
-@file{util/texi-elements-by-size}.  (Its functionality may also be
-useful to authors; @pxref{texi-elements-by-size}.)
+provides a very simple example of calling @command{texi2any} from a
+shell script; it's in @file{util/texi2html} in the Texinfo sources.
+More consequentially, @command{texi-elements-by-size} is an example
+Perl script using the @code{Texinfo::Parser} module interface; it's
+also in the @file{util} source directory.  (Its functionality may also
+be useful to authors; @pxref{texi-elements-by-size}.)
 
 @cindex Future of Texinfo implementations
 With the release of @command{texi2any} as the reference
@@ -17476,7 +17592,7 @@ cannot absolutely promise, since needs change over time.
 
 Many aspects of the behavior and output of @command{texi2any} may be
 modified by modifying so-called @dfn{customization variables}.  These
-fall into four general categories:
+fall into a few general categories:
 
 @itemize @bullet
 @item
@@ -17488,6 +17604,9 @@ Those associated with command-line options; for example, the
 customization variable @code{SPLIT} is associated with the
 @option{--split} command-line option, and @code{TEXINFO_OUTPUT_FORMAT}
 allows specifying the output format.
+
+@item
+Those associated with customizing the HTML output.
 
 @item
 Other ad hoc variables.
@@ -17817,6 +17936,11 @@ For HTML@.  Use icons for the navigation panel; default false.
 For HTML@.  If set, the associated value is prepended to the image file
 links; default unset.
 
+@item INLINE_CONTENTS
+For HTML@.  If set, output the contents where the @code{@@contents} and
+similar @@-commands are located; default true.  This is ignored if
+@code{@@set*contentsaftertitlepage} is set (@pxref{Contents}).
+
 @item INLINE_CSS_STYLE
 For HTML@.  Put CSS directly in HTML elements rather than at the
 beginning of the output; default false.
@@ -18061,16 +18185,18 @@ If set, begin outputting at @code{@@setfilename}, if
 
 @item IGNORE_SPACE_AFTER_BRACED_COMMAND_NAME
 If set, spaces are ignored after an @@-command that takes braces.
-Default on, matching the @TeX{} behavior.
+Default true, matching the @TeX{} behavior.
 
 @item INDEX_ENTRY_COLON
 Symbol used between the index entry and the associated node or section;
 default @samp{:}.
 
-@item INLINE_CONTENTS
-For HTML@.  If set, output the contents where the @code{@@contents} and
-similar @@-commands are located; default true.  This is Ignored if
-@code{@@set*contentsaftertitlepage} is set (@pxref{Contents}).
+@item INFO_SPECIAL_CHARS_WARNING
+If set, warn about problematic constructs for Info output (such as the
+string @samp{::}) in node names, menu items, and cross references;
+default true.  Do not warn about index entries, since parsing problems
+there don't prevent navigation; readers can still relatively easily
+find their way to the node in question.
 
 @item INLINE_INSERTCOPYING
 If set, @code{@@insertcopying} is replaced by the @code{@@copying}
@@ -18257,7 +18383,8 @@ differences before installing the updates in the original document.
 This will be remedied in a future release.)
 
 The following transformations are currently supported (many are used
-in the @code{pod2texi} utility distributed with Texinfo):
+in the @code{pod2texi} utility distributed with Texinfo;
+@pxref{Invoking @t{pod2texi}}):
 
 @ftable @samp
 @item complete_tree_nodes_menus
@@ -18265,9 +18392,9 @@ Add menu entries or whole menus for nodes associated with sections of
 any level, based on the sectioning tree.
 
 @item fill_gaps_in_sectioning
-Adds empty @code{@@unnumbered} in a tree to fill gaps in sectioning.
-For example, an @code{@@unnumberedsec} will be inserted if an
-@code{@@chapter} is followed by an @code{@@subsection}.
+Adds empty @code{@@unnumbered...} sections in a tree to fill gaps in
+sectioning.  For example, an @code{@@unnumberedsec} will be inserted
+if an @code{@@chapter} is followed by an @code{@@subsection}.
 
 @item indent_menu_descriptions
 Reformat menus so that descriptions start at column
@@ -18433,7 +18560,7 @@ appropriately in many languages.
 
 
 @node Invoking @t{pod2texi}
-@section Invoking @t{pod2texi}: 
+@section Invoking @t{pod2texi}: Convert POD to Texinfo
 
 @pindex pod2texi
 @cindex Invoking @code{pod2texi}
@@ -18455,7 +18582,7 @@ output of @code{pod2texi --help}, the version on the web at
 
 For an example of using @code{pod2texi} to make Texinfo out of the
 Perl documentation itself, see
-@url{http://cvs.savannah.gnu.org/viewvc/texinfo/contrib/perldoc-all/?root=texinfo,
+@url{http://svn.savannah.gnu.org/viewvc/trunk/contrib/perldoc-all/?root=texinfo,
 @file{contrib/perldoc-all}} in the Texinfo source distribution (the
 output is available at @url{http://www.gnu.org/software/perl/manual}).
 
@@ -19087,8 +19214,8 @@ Leading or doubled colons are not treated specially.
 When you create your own @file{dir} file for use with
 @code{Info-directory-list} or @env{INFOPATH}, it's easiest to start by
 copying an existing @file{dir} file and replace all the text after the
-@samp{* Menu:} with your desired entries.  That way, the punctuation and
-special CTRL-_ characters that Info needs will be present.
+@samp{* Menu:} with your desired entries.  That way, the punctuation
+and special @kbd{CTRL-_} characters that Info needs will be present.
 
 As one final alternative, which works only with Emacs Info, you can
 change the @code{Info-directory-list} variable.  For example:
@@ -20191,7 +20318,7 @@ Therefore, Texinfo provides a way for manual authors to specify old
 node names and the new nodes to which the old names should be
 redirected, via the file @var{manual}@file{-noderename.cnf}, where
 @var{manual} is the base name of the manual.  For example, the manual
-@file{texinfo.txi} would be supplemented by a file
+@file{texinfo.texi} would be supplemented by a file
 @file{texinfo-noderename}.cnf.  (This name can be overridden by
 setting the @file{RENAMED_NODES_FILE} customization variable;
 @pxref{Customization Variables}).
@@ -20941,9 +21068,19 @@ Make a cross reference to an Info file for which there is no printed
 manual.  @xref{@t{@@inforef}}.
 
 @item @@inlinefmt@{@var{fmt}, @var{text}@}
-@itemx @@inlineraw@{@var{fmt}, @var{raw-text}@}
-Insert (raw) @var{text} only if the output format is @var{fmt}.
+Insert @var{text} only if the output format is @var{fmt}.
 @xref{Inline Conditionals}.
+
+@item @@inlinefmtifelse@{@var{fmt}, @var{text}, @var{else-text}@}
+Insert @var{text} if the output format is @var{fmt}, else @var{else-text}.
+
+@item @@inlineifclear@{@var{var}, @var{text}@}
+@itemx @@inlineifset@{@var{var}, @var{text}@}
+Insert @var{text} only if the Texinfo variable @var{var} is (not) set.
+
+@item @@inlineraw@{@var{fmt}, @var{raw-text}@}
+Insert @var{text} as in a raw conditional, only if the output format
+is @var{fmt}.
 
 @item \input @var{macro-definitions-file}
 Use the specified macro definitions file.  This command is used only
@@ -22181,7 +22318,7 @@ and other version control systems, which expand it into a string such
 as:
 
 @example
-$Id: texinfo.txi 5232 2013-03-11 18:31:12Z karl $
+$Id: texinfo.texi 5381 2013-09-26 23:03:58Z karl $
 @end example
 
 (This is potentially useful in all sources that use version control,
