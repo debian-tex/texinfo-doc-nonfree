@@ -1,8 +1,9 @@
 texinfo-doc-nonfree (5.9.96-1) unstable; urgency=medium
 
   * Imported Upstream version 5.9.96
+  * update standards version, no changes necessary
 
- -- Norbert Preining <preining@debian.org>  Thu, 25 Jun 2015 15:34:44 +0900
+ -- Norbert Preining <preining@debian.org>  Thu, 25 Jun 2015 15:36:06 +0900
 
 texinfo-doc-nonfree (5.2.0-1) unstable; urgency=low
 
