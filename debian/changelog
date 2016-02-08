@@ -1,3 +1,10 @@
+texinfo-doc-nonfree (6.1.0-1) unstable; urgency=medium
+
+  * Imported Upstream version 6.1.0
+  * info.{texi,info} gone, don't work on it
+
+ -- Norbert Preining <preining@debian.org>  Mon, 08 Feb 2016 14:50:56 +0900
+
 texinfo-doc-nonfree (6.0.0-2) unstable; urgency=medium
 
   * fix build-dep (Closes: #790709)
