@@ -12,7 +12,6 @@ build-indep: build-stamp
 build-stamp:
 	dh_testdir
 	makeinfo texinfo.texi
-	makeinfo info.texi
 	makeinfo info-stnd.texi
 	makeinfo --html texinfo.texi
 	touch $@
@@ -20,7 +19,6 @@ build-stamp:
 clean:
 	dh_testdir
 	rm -f texinfo.info texinfo.info-1 texinfo.info-2 texinfo.info-3 
-	rm -f info.info 
 	rm -f info-stnd.info
 	rm -rf texinfo
 	dh_clean build-stamp install-stamp
@@ -34,7 +32,7 @@ install-stamp: build-stamp
 	dh_prep
 	# install info documentation
 	dh_installinfo texinfo.info texinfo.info-1 texinfo.info-2 \
-		texinfo.info-3 info.info info-stnd.info
+		texinfo.info-3 info-stnd.info
 	# install the html documentation
 	mkdir -p $(pkg)/usr/share/doc/texinfo/
 	cp -a texinfo $(pkg)/usr/share/doc/texinfo/html
