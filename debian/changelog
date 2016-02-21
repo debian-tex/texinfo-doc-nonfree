@@ -1,8 +1,9 @@
 texinfo-doc-nonfree (6.1.0-2) unstable; urgency=medium
 
   * bump build-deps to texinfo >= 6.1 (Closes: #815288)
+  * bump standards version to 3.9.7, no changes necessary
 
- -- Norbert Preining <preining@debian.org>  Sun, 21 Feb 2016 10:31:12 +0900
+ -- Norbert Preining <preining@debian.org>  Sun, 21 Feb 2016 10:33:35 +0900
 
 texinfo-doc-nonfree (6.1.0-1) unstable; urgency=medium
 
