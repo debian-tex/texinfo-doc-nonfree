@@ -1,5 +1,5 @@
 \input texinfo.tex    @c -*-texinfo-*-
-@c $Id: texinfo.texi 6987 2016-02-06 08:59:21Z gavin $
+@c $Id: texinfo.texi 7287 2016-07-30 20:37:16Z gavin $
 
 @c Everything between the start/end of header lines will be passed by
 @c Emacs's {texinfo,makeinfo}-format region commands.  See the `start of
@@ -978,13 +978,17 @@ specification usable for any sort of content (a reference is at
 unlike all the other output formats, is a transliteration of the
 Texinfo source rather than processed output.  That is, it translates
 the Texinfo markup commands into XML syntax, for further processing by
-XML tools.  The details of the output are defined in an XML DTD as
-usual, which is contained in a file @file{texinfo.dtd} included in the
+XML tools.  The XML contains enough information to recreate the
+original content, except for syntactic constructs such as Texinfo
+macros and conditionals.  The Texinfo source distribution includes a
+utility script @file{txixml2texi} to do that backward transformation.
+
+The details of the output syntax are defined in an XML DTD as usual,
+which is contained in a file @file{texinfo.dtd} included in the
 Texinfo source distribution and available via the Texinfo web pages.
-The XML contains enough information to recreate the original content,
-except for syntactic constructs such as Texinfo macros and
-conditionals.  The Texinfo source distribution includes a utility script
-@file{txixml2texi} to do that backward transformation.
+Texinfo XML files, and XML files in general, cannot be viewed in
+typical web browsers; they won't follow the DTD reference and as a
+result will simply report a (misleading) syntax error.
 @end table
 
 
@@ -1904,7 +1908,7 @@ change it if you wish by setting the @code{tex-start-of-header} and/or
 
 The @code{@@setfilename} line specifies the name of the output file to
 be generated.
-When present, it should be the first Texinfo command (that is, afte
+When present, it should be the first Texinfo command (that is, after
 @samp{\input texinfo}).
 Write the @code{@@setfilename} command at the beginning of a line and
 follow it on the same line by the Info file name.
@@ -2573,41 +2577,6 @@ HTML output, the links in the short table of contents point to
 corresponding entries in the full table of contents rather than the text
 of the document. The links in the full table of contents point to the
 main text of the document.
-
-In the past, the contents commands were sometimes placed at the end of
-the file, after any indices and just before the @code{@@bye}, but we
-no longer recommend this.
-
-@findex setcontentsaftertitlepage
-@findex setshortcontentsaftertitlepage
-@cindex Contents, after title page
-@cindex Table of contents, after title page
-However, since many existing Texinfo documents still do have the
-@code{@@contents} at the end of the manual, if you are a user printing
-a manual, you may wish to force the contents to be printed after the
-title page.  You can do this by specifying
-@code{@@setcontentsaftertitlepage} and/or
-@code{@@setshortcontentsaftertitlepage}.  The first prints only the
-main contents after the @code{@@end titlepage}; the second prints both
-the short contents and the main contents.  In either case, any
-subsequent @code{@@contents} or @code{@@shortcontents} is ignored.
-
-You need to include the @code{@@set@dots{}contentsaftertitlepage}
-commands early in the document (just after @code{@@setfilename}, for
-example).  We recommend using @command{texi2dvi} (@pxref{Format with
-@command{texi2dvi}}) to specify this without altering the source file at
-all.  For example:
-
-@example
-texi2dvi --texinfo=@@setcontentsaftertitlepage foo.texi
-@end example
-
-An alternative invocation, using @command{texi2any}:
-
-@example
-texi2any --dvi --Xopt --texinfo=@@setcontentsaftertitlepage foo.texi
-@end example
-
 
 
 @node The Top Node
@@ -12988,8 +12957,7 @@ version of the manual you are reading.
 In complex documents, you may want Texinfo to issue an error message
 in some conditionals that should not ever be processed.  The
 @code{@@errormsg@{@var{text}@}} command will do this; it takes one
-argument, the text of the error message, which is expanded more or
-less as if it were Info text.
+argument, the text of the error message.
 
 We mention @code{@@errormsg@{@}} here even though it is not strictly
 related to conditionals, since in practice it is most likely to be
@@ -16721,9 +16689,9 @@ variable with the same name (minus the leading @code{@@}):
 @@oddfooting    @@oddfootingmarks
 @@oddheading    @@oddheadingmarks
 @@pagesizes     @@paragraphindent
-@@setchapternewpage @@setcontentsaftertitlepage
-@@setfilename   @@setshortcontentsaftertitlepage @@shortcontents
-@@urefbreakstyle @@validatemenus @@xrefautomaticsectiontitle
+@@setchapternewpage  @@setfilename
+@@shortcontents  @@urefbreakstyle
+@@validatemenus  @@xrefautomaticsectiontitle
 @end smallexample
 
 Setting such a customization variable to a value @samp{foo} is similar
@@ -16746,52 +16714,73 @@ meaning of the options.
 
 @multitable @columnfractions 0.5 0.5
 @headitem Option @tab Variable
+@item
 @vindex ENABLE_ENCODING
-@item @option{--enable-encoding}   @tab @code{ENABLE_ENCODING}
+@option{--enable-encoding}   @tab @code{ENABLE_ENCODING}
 @vindex documentlanguage
-@item @option{--document-language} @tab @code{documentlanguage}
+@item
+@option{--document-language} @tab @code{documentlanguage}
+@item
 @vindex ERROR_LIMIT
-@item @option{--error-limit}       @tab @code{ERROR_LIMIT}
+@option{--error-limit}       @tab @code{ERROR_LIMIT}
+@item
 @vindex FILLCOLUMN
-@item @option{--fill-column}       @tab @code{FILLCOLUMN}
+@option{--fill-column}       @tab @code{FILLCOLUMN}
 @vindex footnotestyle
-@item @option{--footnote-style}    @tab @code{footnotestyle}
+@item
+@option{--footnote-style}    @tab @code{footnotestyle}
+@item
 @vindex FORCE
-@item @option{--force}             @tab @code{FORCE}
+@option{--force}             @tab @code{FORCE}
 @vindex INTERNAL_LINKS
-@item @option{--internal-links}    @tab @code{INTERNAL_LINKS}
+@item
+@option{--internal-links}    @tab @code{INTERNAL_LINKS}
+@item
 @vindex MACRO_EXPAND
-@item @option{--macro-expand}      @tab @code{MACRO_EXPAND}
+@option{--macro-expand}      @tab @code{MACRO_EXPAND}
+@item
 @vindex HEADERS
 @vindex SHOW_MENU
-@item @option{--headers}           @tab @code{HEADERS}, @code{SHOW_MENU}
+@option{--headers}           @tab @code{HEADERS}, @code{SHOW_MENU}
+@item
 @vindex NO_WARN
-@item @option{--no-warn}           @tab @code{NO_WARN}
+@option{--no-warn}           @tab @code{NO_WARN}
+@item
 @vindex novalidate
-@item @option{--no-validate}       @tab @code{novalidate}
+@option{--no-validate}       @tab @code{novalidate}
+@item
 @vindex NUMBER_FOOTNOTES
-@item @option{--number-footnotes}  @tab @code{NUMBER_FOOTNOTES}
+@option{--number-footnotes}  @tab @code{NUMBER_FOOTNOTES}
+@item
 @vindex NUMBER_SECTIONS
-@item @option{--number-sections}   @tab @code{NUMBER_SECTIONS}
+@option{--number-sections}   @tab @code{NUMBER_SECTIONS}
+@item
 @vindex NODE_FILES
-@item @option{--node-files}        @tab @code{NODE_FILES}
+@option{--node-files}        @tab @code{NODE_FILES}
+@item
 @vindex OUT
 @vindex OUTFILE
 @vindex SUBDIR
-@item @option{--output}            @tab @code{OUT}, @code{OUTFILE},
+@option{--output}            @tab @code{OUT}, @code{OUTFILE},
                                         @code{SUBDIR}
+@item
 @vindex paragraphindent
-@item @option{--paragraph-indent}  @tab @code{paragraphindent}
+@option{--paragraph-indent}  @tab @code{paragraphindent}
+@item
 @vindex SILENT
-@item @option{--silent}            @tab @code{SILENT}
+@option{--silent}            @tab @code{SILENT}
+@item
 @vindex SPLIT
-@item @option{--split}             @tab @code{SPLIT}
+@option{--split}             @tab @code{SPLIT}
+@item
 @vindex SPLIT_SIZE
-@item @option{--split-size}        @tab @code{SPLIT_SIZE}
+@option{--split-size}        @tab @code{SPLIT_SIZE}
+@item
 @vindex TRANSLITERATE_FILE_NAMES
-@item @option{--transliterate-file-names} @tab @code{TRANSLITERATE_FILE_NAMES}
+@option{--transliterate-file-names} @tab @code{TRANSLITERATE_FILE_NAMES}
+@item
 @vindex VERBOSE
-@item @option{--verbose}           @tab @code{VERBOSE}
+@option{--verbose}           @tab @code{VERBOSE}
 @end multitable
 
 Setting such a customization variable to a value @samp{foo} is
@@ -19822,8 +19811,8 @@ Print a complete table of contents.  Has no effect in Info, which uses
 menus instead.  @xref{Contents, , Generating a Table of Contents}.
 
 @item @@copying
-Specify copyright holders and copying conditions for the document Pair
-with @code{@@end cartouche}.  @xref{@code{@@copying}}.
+Specify copyright holders and copying conditions for the document.  Pair
+with @code{@@end copying}.  @xref{@code{@@copying}}.
 
 @item @@copyright@{@}
 Generate the copyright symbol @copyright{}.
@@ -20558,18 +20547,9 @@ Define the Texinfo variable @var{txivar}, optionally to the value
 Specify whether chapters start on new pages, and if so, whether on
 odd-numbered (right-hand) new pages.  @xref{@code{@@setchapternewpage}}.
 
-@item @@setcontentsaftertitlepage
-Put the table of contents after the @samp{@@end titlepage} even if the
-@code{@@contents} command is at the end.  @xref{Contents}.
-
 @item @@setfilename @var{info-file-name}
 Provide a name to be used for the output files.  This command is ignored
 for @TeX{} formatting.  @xref{@code{@@setfilename}}.
-
-@item @@setshortcontentsaftertitlepage
-Place the short table of contents after the @samp{@@end titlepage}
-command even if the @code{@@shortcontents} command is at the end.
-@xref{Contents}.
 
 @item @@settitle @var{title}
 Specify the title for page headers in a printed manual, and the
@@ -20927,6 +20907,32 @@ contain cross-reference commands (@code{@@ref}, @code{@@xref},
 
 For precise and complete information, we suggest looking into the
 test suite in the sources, which exhaustively tries combinations.
+
+
+@node Obsolete @@-Commands
+@section Obsolete @@-Commands
+
+Here are Texinfo @@-commands which are obsolete or have been removed 
+completely.  This section is for historical purposes.
+
+@ftable @code
+@item @@setcontentsaftertitlepage
+@cindex Contents, after title page
+@cindex Table of contents, after title page
+In the past, the contents commands were sometimes placed at the end of
+the file, after any indices and just before the @code{@@bye}, but we
+no longer recommend this.
+This command could be used by a user printing a manual, to force the 
+contents to be printed after the title page
+(after the @samp{@@end titlepage} line)
+even if the @code{@@contents} command was at the end of the manual.  It 
+now does nothing.
+
+@item @@setshortcontentsaftertitlepage
+This placed the short table of contents after the @samp{@@end titlepage}
+command even if the @code{@@shortcontents} command was at the end.  It 
+now does nothing.
+@end ftable
 
 
 @node Tips
@@ -21291,7 +21297,7 @@ beginning of the section that describes the functions.
 @subsubheading Node Length
 
 Keep nodes (sections) to a reasonable length, whatever reasonable
-might be in the given context.  Don't hesitate break up long nodes
+might be in the given context.  Don't hesitate to break up long nodes
 into subnodes and have an extensive tree structure; that's what it's
 there for.  Many times, readers will probably try to find a single
 specific point in the manual, using search, indexing, or just plain
@@ -21476,7 +21482,7 @@ Control System}) and other version control systems, which expand it
 into a string such as:
 
 @example
-$Id: texinfo.texi 6987 2016-02-06 08:59:21Z gavin $
+$Id: texinfo.texi 7287 2016-07-30 20:37:16Z gavin $
 @end example
 
 (This is potentially useful in all sources that use version control,
