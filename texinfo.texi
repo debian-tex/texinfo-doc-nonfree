@@ -1,5 +1,5 @@
 \input texinfo.tex    @c -*-texinfo-*-
-@c $Id: texinfo.texi 7287 2016-07-30 20:37:16Z gavin $
+@c $Id: texinfo.texi 7814 2017-05-24 19:46:36Z gavin $
 
 @c Everything between the start/end of header lines will be passed by
 @c Emacs's {texinfo,makeinfo}-format region commands.  See the `start of
@@ -583,6 +583,7 @@ Format with @command{tex}/@command{texindex}
 
 * Reference Implementation::    @command{texi2any}: the reference implementation.
 * Invoking @command{texi2any}::           Running the translator from a shell.
+* @command{texi2any} Environment Variables::
 * @command{texi2any} Printed Output::     Calling @command{texi2dvi}.
 * Pointer Validation::          How to check that pointers point somewhere.
 * Customization Variables::     Configuring @command{texi2any}.
@@ -707,10 +708,10 @@ Info Format General Layout
 
 Info Format Text Constructs
 
-* Menu:  Info Format Menu.
-* Image: Info Format Image.
-* Printindex: Info Format Printindex.
-* Xref:  Info Format Cross Reference.
+* Info Format Menu::
+* Info Format Image::
+* Info Format Printindex::
+* Info Format Cross Reference::
 
 @end detailmenu
 @end menu
@@ -5935,13 +5936,13 @@ Here are some cases for which it is preferable @emph{not} to use @code{@@code}:
 
 @itemize @bullet
 @item
-For shell command names such as @command{ls} (use @code{@@command}).
+For shell command names, such as @command{ls} (use @code{@@command}).
 
 @item
-For environment variable such as @env{TEXINPUTS} (use @code{@@env}).
+For environment variables, such as @env{TEXINPUTS} (use @code{@@env}).
 
 @item
-For shell options such as @samp{-c} when such options stand alone (use
+For shell options, such as @samp{-c}, when such options stand alone (use
 @code{@@option}).
 
 @item
@@ -6688,8 +6689,8 @@ For example,
 
 @example
 @group
-@@strong@{Caution:@} @@samp@{rm *@}
-removes @@emph@{all@} normal files.
+@@strong@{Caution:@} @@samp@{rm * .[^.]*@}
+removes @@emph@{all@} files in the directory.
 @end group
 @end example
 
@@ -6698,7 +6699,7 @@ produces the following:
 
 @quotation
 @strong{Caution}: @samp{rm * .[^.]*}
-removes @emph{all} normal files.
+removes @emph{all} files in the directory.
 @end quotation
 
 The @code{@@strong} command is seldom used except to mark what is, in
@@ -7165,7 +7166,7 @@ Examples are often, logically speaking, ``in the middle'' of a
 paragraph, and the text that continues afterwards should not be
 indented, as in the example above.  The @code{@@noindent} command
 prevents a piece of text from being indented as if it were a new
-paragraph (@pxref{@code{@@noindent}}.
+paragraph (@pxref{@code{@@noindent}}).
 
 If you want to embed code fragments within sentences, instead of
 displaying them, use the @code{@@code} command or its relatives
@@ -7514,7 +7515,7 @@ beginning of the line is fully flush left with the
 line that follows after it.
 @end display
 
-The standard usage of @code{@@indent} is just as above: at the
+The standard usage of @code{@@noindent} is just as above: at the
 beginning of what would otherwise be a paragraph, to eliminate the
 indentation that normally happens there.  It can either be followed by
 text or be on a line by itself.  There is no reason to use it
@@ -7600,7 +7601,7 @@ Info, you'll see the @code{@@cartouche} had no effect):
 @cartouche
 @example
 % pwd
-/usr/local/info
+/usr/local/share/emacs
 @end example
 @end cartouche
 
@@ -8025,7 +8026,7 @@ with each one, such as a list of definitions.
 
 Write the @code{@@table} command at the beginning of a line, after a
 blank line, and follow it on the same line with an argument that is an
-`indicating'' command, such as @code{@@code}, @code{@@samp},
+`indicating' command, such as @code{@@code}, @code{@@samp},
 @code{@@var}, @code{@@option}, or @code{@@kbd} (@pxref{Indicating}).
 This command will be applied to the text in the first column.  For 
 example, @code{@@table @@code} will cause the text in the first column 
@@ -10248,12 +10249,12 @@ Both distributions include installation instructions.
 @cindex Single right-pointing angle quotation mark
 @findex guillemetleft
 @findex guillemotleft
-@cindex @guillemetleft{}
+@cindex @sortas{<<} @guillemetleft{}
 @findex guillemetright
 @findex guillemotright
 @cindex @guillemetright{}
 @findex guilsinglleft
-@cindex @guilsinglleft{}
+@cindex @sortas{<} @guilsinglleft{}
 @findex guilsinglright
 @cindex @guilsinglright{}
 @c The third column doesn't have the full text in the prototype so that
@@ -12616,7 +12617,7 @@ that for functions except that variables do not take arguments.
 @cindex Internationalization
 Texinfo has some support for writing in languages other than English,
 although this area still needs considerable work.  (If you are
-yourself helping to translate the fixed strings written to documents,
+the one helping to translate the fixed strings written to documents,
 @pxref{Internationalization of Document Strings}.)
 
 For a list of the various accented and special characters Texinfo
@@ -12659,7 +12660,7 @@ Germany).
 @cindex Document strings, translation of
 For Info and other online output, this command changes the translation
 of various @dfn{document strings} such as ``see'' in cross-references
-(@pxref{Cross References}), ``Function' in defuns (@pxref{Definition
+(@pxref{Cross References}), ``Function'' in defuns (@pxref{Definition
 Commands}), and so on.  Some strings, such as ``Node:'', ``Next:'',
 ``Menu:'', etc., are keywords in Info output, so are not translated
 there; they are translated in other output formats.
@@ -13576,10 +13577,10 @@ Good, @@samp@{@@@@node@} is defined.
 
 @noindent will output the expected `Good, @samp{@@node} is defined.'.
 
-This conditional will also consider true any new commands defined by
+This conditional will also consider any new commands defined by
 the document via @code{@@macro}, @code{@@alias},
 @code{@@definfoenclose}, and @code{@@def@r{(}code@r{)}index}
-(@pxref{Defining New Texinfo Commands}).  Caveat: the @TeX{}
+(@pxref{Defining New Texinfo Commands}) to be true.  Caveat: the @TeX{}
 implementation reports internal @TeX{} commands, in addition to all
 the Texinfo commands, as being ``defined''; the @code{makeinfo}
 implementation is reliable in this regard, however.
@@ -14033,6 +14034,38 @@ macros containing line-oriented commands or text, such as
 @code{@@example} environments, may behave unpredictably in @TeX{}.
 
 @item
+If you have problems using conditionals within a macro, an alternative
+is to use separate macro definitions inside conditional blocks.  For
+example, instead of
+
+@example
+@@macro Mac
+@@iftex
+text for TeX output
+@@end iftex
+@@ifnottex
+text for not TeX output
+@@end ifnottex
+@@end macro
+@end example
+
+@noindent you can do the following instead:
+
+@example
+@@iftex
+@@macro Mac
+text for TeX output
+@@end macro
+@@end iftex
+
+@@ifnottex
+@@macro Mac
+text for not TeX output
+@@end macro
+@@end ifnottex
+@end example
+
+@item
 Texinfo commands in the expansion of a macro in the text of an index 
 entry may end up being typeset as literal text (including an ``@@'' 
 sign), instead of being interpreted with their intended meaning.
@@ -14075,11 +14108,10 @@ Fran@,cois+.
 @item
 Ending a macro body with @samp{@@c} may cause text following the macro
 invocation to be ignored as a comment in @command{makeinfo}.  This is 
-not the case when processing with @TeX{} (in case you really want to 
-comment out following text, use @samp{@@comment} instead).  This was
-often done to ``comment out'' an unwanted newline at the end of a macro 
-body, but this is not necessary any more, as the final newline before 
-@samp{@@end macro} is not included in the macro body anyway.
+not the case when processing with @TeX{}.  This was often done
+to ``comment out'' an unwanted newline at the end of a macro body, but 
+this is not necessary any more, as the final newline before @samp{@@end 
+macro} is not included in the macro body anyway.
 
 @item
 In general, you can't arbitrarily substitute a macro (or
@@ -14869,7 +14901,7 @@ instead of DVI (@pxref{PDF Output}), by running @command{pdftex}
 instead of @command{tex}.  Alternatively, the command
 @command{texi2pdf} is an abbreviation for running @samp{texi2dvi
 --pdf}.  The command @command{pdftexi2dvi} is also provided as a
-convenience for AUC-@TeX{} (@pxref{Top,,, auctex, AUC-@TeX{}}, as it
+convenience for AUC-@TeX{} (@pxref{Top,,, auctex, AUC-@TeX{}}), as it
 prefers to merely prepend @samp{pdf} to DVI producing tools to have
 PDF producing tools.
 
@@ -15928,6 +15960,7 @@ The rest of this chapter goes into the details.
 @menu
 * Reference Implementation::    @command{texi2any}: the reference implementation.
 * Invoking @command{texi2any}::           Running the translator from a shell.
+* @command{texi2any} Environment Variables::
 * @command{texi2any} Printed Output::     Calling @command{texi2dvi}.
 * Pointer Validation::          How to check that pointers point somewhere.
 * Customization Variables::     Configuring @command{texi2any}.
@@ -16022,7 +16055,7 @@ turn.  If an input file name is @samp{-}, standard input is read.
 @cindex @code{texi2any} options
 @cindex Options for @code{texi2any}
 
-The @command{texi2any} program accept many options.  Perhaps the
+The @command{texi2any} program accepts many options.  Perhaps the
 most basic are those that change the output format.  By default,
 @command{texi2any} outputs Info.
 
@@ -16501,6 +16534,10 @@ Generate Texinfo XML output (rather than Info).
 
 @end table
 
+
+@node @command{texi2any} Environment Variables
+@section Environment Variables Recognized by @command{texi2any}
+
 @vindex TEXINFO_OUTPUT_FORMAT
 @cindex Environment variable @code{TEXINFO_OUTPUT_FORMAT}
 @command{makeinfo} also reads the environment variable
@@ -16516,6 +16553,38 @@ If not set or otherwise specified, Info output is the default.
 The customization variable of the same name is also read; if set, that
 overrides an environment variable setting, but not a command-line
 option.  @xref{Customization Variables and Options}.
+
+@vindex TEXINFO_XS
+@cindex Perl extension modules (XS)
+You can control @command{texi2any}'s use of Perl extension modules
+by setting the @env{TEXINFO_XS} environment variable.  These modules
+are compiled native code that the interpreted Perl code can use.
+Ideally, these extension modules should just work, and the only noticable
+difference they should make is that @command{texi2any} finishes running
+sooner.  However, you can use this environment variable for the purposes
+of troubleshooting: for example, if you have problems with the output of
+@command{texi2any} varying depending on whether the extension modules are
+in use.
+
+The following values of @env{TEXINFO_XS} are recognized by
+@command{texi2any}:
+
+@table @samp
+@item default
+The default behavior.  Try to load extension modules, and silently fall
+back to the interpreted Perl implementations if this fails.
+
+@item warn
+Try to load extension modules, and if this fails, give a warning message
+before falling back to the interpreted Perl implementations.
+
+@item debug
+Try to load extension modules, printing many messages while doing so.
+
+@item omit
+Do not use extension modules.
+
+@end table
 
 
 @node @command{texi2any} Printed Output
@@ -16717,7 +16786,6 @@ meaning of the options.
 @item
 @vindex ENABLE_ENCODING
 @option{--enable-encoding}   @tab @code{ENABLE_ENCODING}
-@vindex documentlanguage
 @item
 @option{--document-language} @tab @code{documentlanguage}
 @item
@@ -16739,8 +16807,6 @@ meaning of the options.
 @vindex MACRO_EXPAND
 @option{--macro-expand}      @tab @code{MACRO_EXPAND}
 @item
-@vindex HEADERS
-@vindex SHOW_MENU
 @option{--headers}           @tab @code{HEADERS}, @code{SHOW_MENU}
 @item
 @vindex NO_WARN
@@ -16806,10 +16872,6 @@ forms:
 These correspond to the command-line options (and
 @code{TEXINFO_OUTPUT_FORMAT} environment variable values) of the same
 name.  @xref{Invoking @command{texi2any}}.
-
-@item debugcount
-Instead of generating a regular output format, output the count of
-bytes and lines obtained when converting to Info, and other information.
 
 @item debugtree
 @cindex tree representation, for debugging
@@ -17141,6 +17203,7 @@ For HTML@.  If set, a vertical navigation panel is used; default false.
 
 @item WORDS_IN_PAGE
 @cindex Navigation panel, bottom of page
+@cindex Navigation footer
 For HTML, with output split at nodes.  Specifies the approximate
 minimum page length at which a navigation panel is placed at the
 bottom of a page.  To avoid ever having the navigation buttons at the
@@ -17288,10 +17351,6 @@ Perl encoding used to process the Texinfo source.  You should not need
 to use that variable, since it is set by @code{@@documentencoding}
 (@pxref{@code{@@documentencoding}}).
 
-@item MACRO_BODY_IGNORES_LEADING_SPACE
-Ignore white space at the beginning of user defined macro body line,
-mimicking a @TeX{} limitation (@pxref{Macro Details}).  Default off.
-
 @item MAX_MACRO_CALL_NESTING
 The maximal number of recursive calls of @@-commands defined through
 @code{@@rmacro}; default 100000.  The purpose of this variable is to
@@ -17376,6 +17435,7 @@ If set, create redirection files for renamed nodes.  Set by default
 when generating HTML@.
 
 @item SHOW_MENU
+@vindex HEADERS
 @opindex --no-headers
 If set, Texinfo menus are output.  By default, it is set unless
 generating Docbook or if @option{--no-headers} is specified.
@@ -17415,11 +17475,6 @@ Name of the command used to produce PostScript, PDF, and DVI; default
 @cindex compatibility, with @command{texi2html}
 Generate HTML and try to be as compatible as possible with
 @command{texi2html}; default false.
-
-@item TEXINFO_COLUMN_FOR_DESCRIPTION
-Used with the @code{indent_menu_descriptions} tree transformation,
-described below; default 32 (matching
-@code{texinfo-column-for-description} in Emacs)).
 
 @item TEXINFO_DTD_VERSION
 For XML@.  Version of the DTD used in the XML output preamble.  The
@@ -17471,10 +17526,6 @@ any level, based on the sectioning tree.
 Adds empty @code{@@unnumbered...} sections in a tree to fill gaps in
 sectioning.  For example, an @code{@@unnumberedsec} will be inserted
 if a @code{@@chapter} is followed by a @code{@@subsection}.
-
-@item indent_menu_descriptions
-Reformat menus so that descriptions start at column
-@code{TEXINFO_COLUMN_DESCRIPTION}.
 
 @item insert_nodes_for_sectioning_commands
 Insert nodes for sectioning commands lacking a corresponding node.
@@ -18693,7 +18744,7 @@ To achieve maximum portability and accessibility among browsers (both
 graphical and text-based), systems, and users, the HTML output is
 intentionally quite plain and generic.  It has always been our goal
 for users to be able to customize the output to their wishes via CSS
-(@pxref{HTML CSS}) or other means (@pxref{Customization Variables}.
+(@pxref{HTML CSS}) or other means (@pxref{Customization Variables}).
 If you cannot accomplish a reasonable customization, feel free to
 report that.
 
@@ -21482,7 +21533,7 @@ Control System}) and other version control systems, which expand it
 into a string such as:
 
 @example
-$Id: texinfo.texi 7287 2016-07-30 20:37:16Z gavin $
+$Id: texinfo.texi 7814 2017-05-24 19:46:36Z gavin $
 @end example
 
 (This is potentially useful in all sources that use version control,
@@ -23924,13 +23975,6 @@ described next.
 @cindex text constructs, Info format
 
 These special Info constructs can appear within the text of a node.
-
-@menu
-* Menu:  Info Format Menu.
-* Image: Info Format Image.
-* Printindex: Info Format Printindex.
-* Xref:  Info Format Cross Reference.
-@end menu
 
 
 @node Info Format Menu
