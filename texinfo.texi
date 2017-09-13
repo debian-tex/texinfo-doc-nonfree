@@ -1,5 +1,5 @@
 \input texinfo.tex    @c -*-texinfo-*-
-@c $Id: texinfo.texi 7814 2017-05-24 19:46:36Z gavin $
+@c $Id: texinfo.texi 7927 2017-08-11 12:08:40Z mthl $
 
 @c Everything between the start/end of header lines will be passed by
 @c Emacs's {texinfo,makeinfo}-format region commands.  See the `start of
@@ -17335,11 +17335,6 @@ default true.  Do not warn about index entries, since parsing problems
 there don't prevent navigation; readers can still relatively easily
 find their way to the node in question.
 
-@item INLINE_INSERTCOPYING
-If set, @code{@@insertcopying} is replaced by the @code{@@copying}
-content (@pxref{@code{@@copying}}) as if @code{@@insertcopying} were a
-user-defined macro; default false.
-
 @item INPUT_ENCODING_NAME
 Normalized encoding name suitable for output.  Should be a usable
 charset name in HTML, typically one of the preferred IANA encoding
@@ -18778,7 +18773,7 @@ feature.
 @cindex Footnote styles, in HTML
 @strong{Footnotes:} for HTML, when the footnote style is @samp{end},
 or if the output is not split, footnotes are put at the end of the
-output.  If the footnoet style is set to @samp{separate}, and the
+output.  If the footnote style is set to @samp{separate}, and the
 output is split, they are placed in a separate file.  @xref{Footnote
 Styles}.
 
@@ -21533,7 +21528,7 @@ Control System}) and other version control systems, which expand it
 into a string such as:
 
 @example
-$Id: texinfo.texi 7814 2017-05-24 19:46:36Z gavin $
+$Id: texinfo.texi 7927 2017-08-11 12:08:40Z mthl $
 @end example
 
 (This is potentially useful in all sources that use version control,
