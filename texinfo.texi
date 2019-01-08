@@ -1,5 +1,4 @@
 \input texinfo.tex    @c -*-texinfo-*-
-@c $Id: texinfo.texi 7927 2017-08-11 12:08:40Z mthl $
 
 @c Everything between the start/end of header lines will be passed by
 @c Emacs's {texinfo,makeinfo}-format region commands.  See the `start of
@@ -23,10 +22,6 @@
 @syncodeindex vr cp
 @syncodeindex pg cp
 
-@tex
-\global\usebracesinindexestrue
-@end tex
-
 @c finalout
 
 @comment %**end of header
@@ -38,7 +33,8 @@ printed manual from a single source using semantic markup.
 
 Copyright @copyright{} 1988, 1990, 1991, 1992, 1993, 1995, 1996, 1997,
 1998, 1999, 2001, 2001, 2003, 2004, 2005, 2006, 2007, 2008, 2009,
-2010, 2011, 2012, 2013, 2014, 2015, 2016 Free Software Foundation, Inc.
+2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019 Free Software
+Foundation, Inc.
 
 @quotation
 Permission is granted to copy, distribute and/or modify this document
@@ -417,7 +413,7 @@ Combining Indices
 
 Special Insertions
 
-* Special Characters::          Inserting @@ @{@} , \ #
+* Special Characters::          Inserting @@ @{@} , \ # &
 * Inserting Quote Characters::  Inserting left and right quotes, in code.
 * Inserting Space::             Inserting the right amount of whitespace.
 * Inserting Accents::           Inserting accents and special characters.
@@ -429,13 +425,14 @@ Special Insertions
                                  expansion of macros, errors, etc.
 * Inserting Unicode::           Inserting a Unicode character by code point.
 
-Special Characters: Inserting @@ @{@} , \ #
+Special Characters: Inserting @@ @{@} , \ # &
 
 * Inserting an Atsign::         @code{@@@@}, @code{@@atchar@{@}}.
 * Inserting Braces::            @code{@@@{ @@@}}, @code{@@l rbracechar@{@}}.
 * Inserting a Comma::           , and @code{@@comma@{@}}.
 * Inserting a Backslash::       \ and @code{@@backslashchar@{@}}.
 * Inserting a Hashsign::        # and @code{@@hashchar@{@}}.
+* Inserting an Ampersand::      & and @code{@@ampchar@{@}}.
 
 Inserting Space
 
@@ -569,8 +566,7 @@ Formatting and Printing Hardcopy
 * @code{@@smallbook}::                  How to print small format books and manuals.
 * A4 Paper::                    How to print on A4 or A5 paper.
 * @code{@@pagesizes}::                  How to print with customized page sizes.
-* Cropmarks and Magnification:: How to print marks to indicate the size
-                                 of pages and how to print scaled up output.
+* Magnification::               How to print scaled up output.
 * PDF Output::                  Portable Document Format output.
 * Obtaining @TeX{}::               How to obtain @TeX{}.
 
@@ -2320,9 +2316,6 @@ A template for this method looks like this:
 
 The spacing of the example fits an 8.5 by 11 inch manual.
 
-You can in fact use these commands anywhere, not just on a title page,
-but since they are not logical markup commands, we don't recommend
-them.
 
 @node @code{@@title @@subtitle @@author}
 @subsection @code{@@title}, @code{@@subtitle}, and @code{@@author}
@@ -9465,7 +9458,7 @@ elements that do not correspond to simple characters you can type.
 These are:
 
 @itemize @bullet
-@item The Texinfo special characters: @samp{@@ @{@} , \ #}.
+@item The Texinfo special characters: @samp{@@ @{@} , \ # &}.
 @item Whitespace within and around a sentence.
 @item Accents.
 @item Dots and bullets.
@@ -9480,7 +9473,7 @@ These are:
 @end iftex
 
 @menu
-* Special Characters::          Inserting @@ @{@} , \ #
+* Special Characters::          Inserting @@ @{@} , \ # &
 * Inserting Quote Characters::  Inserting left and right quotes, in code.
 * Inserting Space::             Inserting the right amount of whitespace.
 * Inserting Accents::           Inserting accents and special characters.
@@ -9495,7 +9488,7 @@ These are:
 
 
 @node Special Characters
-@section Special Characters: Inserting @@ @{@} , \ #
+@section Special Characters: Inserting @@ @{@} , \ # &
 @anchor{Braces Atsign}@c previous names for this node
 @anchor{Atsign Braces Comma}
 @cindex Special characters, inserting
@@ -9506,8 +9499,8 @@ Texinfo.  To insert these characters so they appear in text, you must
 put an @samp{@@} in front of these characters to prevent Texinfo from
 misinterpreting them.  Alphabetic commands are also provided.
 
-The other characters (comma, backslash, hash) are special only in
-restricted contexts, as explained in the respective sections.
+The other characters (comma, backslash, hash, ampersand) are special 
+only in restricted contexts, as explained in the respective sections.
 
 @menu
 * Inserting an Atsign::         @code{@@@@}, @code{@@atchar@{@}}.
@@ -9515,6 +9508,7 @@ restricted contexts, as explained in the respective sections.
 * Inserting a Comma::           , and @code{@@comma@{@}}.
 * Inserting a Backslash::       \ and @code{@@backslashchar@{@}}.
 * Inserting a Hashsign::        # and @code{@@hashchar@{@}}.
+* Inserting an Ampersand::      & and @code{@@ampchar@{@}}.
 @end menu
 
 
@@ -9658,6 +9652,57 @@ Here's an example:
 
 Although @samp{@@hashchar@{@}} can be used nearly anywhere, there
 is no need for it anywhere except this unusual case.
+
+
+@node Inserting an Ampersand
+@subsection Inserting `&' with @code{@@&} and @code{@@ampchar@{@}}
+
+@findex ampchar@{@} @r{(literal @samp{&})}
+@cindex Inserting &
+@cindex Ampersand, inserting
+
+Ordinarily, an ampersand `&' is a normal character in Texinfo that can be
+simply typed in your input where you need it.  The result is to
+typeset the ampersand character.
+
+However, the ampersand character has a special meaning in Texinfo in 
+just one restricted context.  In the argument to a definition command
+(@pxref{Definition Commands}), Emacs Lisp keywords beginning with 
+ampersands are recognized and typeset specially.  @xref{A Sample 
+Function Description,,, elisp, GNU Emacs Lisp Reference Manual}.
+For example:
+
+@example
+@@defun foo integer1 &optional integer2 &rest integers
+@@code@{foo@} described here.
+@@end defun
+@end example
+
+@noindent leads to the output
+
+@defun foo integer1 &optional integer2 &rest integers
+@code{foo} described here.
+@end defun
+
+So, in order to typeset an ampersand in such a context (for example, in 
+documentation of a C++ function taking a reference as a parameter),
+it's necessary to use @code{@@&} or some other construct.
+Here's an example:
+
+@example
+@@deftypefn Function int foo (@@code@{const std::vector<int>@@&@} bar)
+Documentation of @@code@{foo@}.
+@@end deftypefn
+@end example
+
+@noindent This gives the output 
+
+@deftypefn Function int foo (@code{const std::vector<int>@&} bar)
+Documentation of @code{foo}.
+@end deftypefn
+
+Although @samp{@@&} and @samp{@@ampchar@{@}} can be used nearly 
+anywhere, there is no need for them anywhere except this unusual case.
 
 
 @node Inserting Quote Characters
@@ -14389,7 +14434,7 @@ such lines.
 
 @vindex CPP_LINE_DIRECTIVES
 The @command{makeinfo} program recognizes these lines by default,
-except within @code{@@verbatim} blocks (@pxref{@code{@@verbatim}}.
+except within @code{@@verbatim} blocks (@pxref{@code{@@verbatim}}).
 Their recognition can be turned off completely with
 @code{CPP_LINE_DIRECTIVES} (@pxref{Other Customization Variables}),
 though there is normally no reason to do so.
@@ -14848,8 +14893,7 @@ Details are in the following sections.
 * @code{@@smallbook}::                  How to print small format books and manuals.
 * A4 Paper::                    How to print on A4 or A5 paper.
 * @code{@@pagesizes}::                  How to print with customized page sizes.
-* Cropmarks and Magnification:: How to print marks to indicate the size
-                                 of pages and how to print scaled up output.
+* Magnification::               How to print scaled up output.
 * PDF Output::                  Portable Document Format output.
 * Obtaining @TeX{}::               How to obtain @TeX{}.
 @end menu
@@ -15190,29 +15234,6 @@ initial'' shown in the index:
 @@printindex cp
 @end example
 
-@findex \usebracesinindexestrue
-However, to enable this behavior, it's necessary (for the time being)
-to give a special option to @TeX{} early in a source document:
-
-@example
-@@tex
-\global\usebracesinindexestrue
-@@end tex
-@end example
-
-@cindex Sort string, incorrect @samp{|}
-This is because the previous @command{texindex} implementation aborted
-with an incorrect error message (@samp{No page number in \entry...})
-on such index entries when handled in the normal way.  Therefore
-@TeX{} wrote out an incorrect ``sort string'' using the @samp{|}
-character; this did not affect the text of the entry, but the index
-initial was the incorrect @samp{|}, and sorting was not perfect.
-
-Because of that fatal error, and because relatively few documents have
-index entries beginning with braces, we want to provide some
-transition time for installations to have the new @command{texindex}.
-At some point in the future, we'll make @code{\usebracesinindexes}
-true by default (the above @TeX{} code will continue to work fine).
 
 @cindex Literate programming, with Texinfo and @code{awk}
 @cindex Texinfo, and literate programming
@@ -15802,32 +15823,9 @@ for other ways to specify @code{@@pagesizes} that do not require
 changing the source file.
 
 
-@node Cropmarks and Magnification
-@section Cropmarks and Magnification
-
-@findex cropmarks
-@cindex Cropmarks for printing
-@cindex Printing cropmarks
-You can (attempt to) direct @TeX{} to print cropmarks at the corners
-of pages with the @code{@@cropmarks} command.  Write the
-@code{@@cropmarks} command on a line by itself near the beginning of
-the Texinfo file, before the title page, like this:
-
-@example
-@@cropmarks
-@end example
-
-This command is mainly for printers that typeset several pages on one
-sheet of film; but you can attempt to use it to mark the corners of a
-book set to 7 by 9.25 inches with the @code{@@smallbook} command.
-(Printers will not produce cropmarks for regular sized output that is
-printed on regular sized paper.)  Since different printing machines
-work in different ways, you should explore the use of this command
-with a spirit of adventure.  You may have to redefine the command in
-@file{texinfo.tex}.
-
-The @code{@@cropmarks} command is recognized and ignored in non-@TeX{}
-output formats.
+@node Magnification
+@section Magnification
+@anchor{Cropmarks and Magnification} @c old name
 
 @findex \mag @r{(raw @TeX{} magnification)}
 @cindex Magnified printing
@@ -16586,6 +16584,20 @@ Do not use extension modules.
 
 @end table
 
+@vindex TEXINFO_XS_PARSER
+Set @env{TEXINFO_XS_PARSER} to @samp{1} to enable the use of the native
+code implementation of the parser module.  This is the part of 
+@command{texi2any} that converts Texinfo input into an internal tree 
+format used for further processing into output formats.  This is not 
+enabled by default due to the greater complexity of this module compared 
+with the other modules that have a native code implementation, and the 
+lack of confidence we have that the native code implementation matches 
+the Perl code in all significant aspects.  Despite the lack of maturity 
+of this module in terms of development and testing, it may be useful for 
+decreasing @command{texi2any} run times when working on Texinfo 
+documentation files.  Note that some error and warning messages will not 
+be translated from English if this module is used.
+
 
 @node @command{texi2any} Printed Output
 @section @command{texi2any} Printed Output
@@ -16745,23 +16757,29 @@ Each of the following @@-commands has an associated customization
 variable with the same name (minus the leading @code{@@}):
 
 @smallexample
-@@allowcodebreaks @@clickstyle @@codequotebacktick
-@@codequoteundirected @@contents @@deftypefnnewline
+@@allowcodebreaks @@clickstyle
+@@codequotebacktick @@codequoteundirected
+@@contents @@deftypefnnewline
 @@documentdescription @@documentencoding @@documentlanguage
-@@evenfooting   @@evenfootingmarks
-@@evenheading   @@evenheadingmarks
-@@everyfooting  @@everyfootingmarks
-@@everyheading  @@everyheadingmarks 
 @@exampleindent @@firstparagraphindent
-@@fonttextsize  @@footnotestyle @@frenchspacing @@headings
+@@footnotestyle @@frenchspacing
 @@kbdinputstyle @@novalidate
-@@oddfooting    @@oddfootingmarks
-@@oddheading    @@oddheadingmarks
-@@pagesizes     @@paragraphindent
-@@setchapternewpage  @@setfilename
+@@paragraphindent @@setfilename
 @@shortcontents  @@urefbreakstyle
 @@validatemenus  @@xrefautomaticsectiontitle
 @end smallexample
+
+@c Relevant to TeX only.
+@c @@evenfooting   @@evenfootingmarks
+@c @@evenheading   @@evenheadingmarks
+@c @@everyfooting  @@everyfootingmarks
+@c @@everyheading  @@everyheadingmarks
+@c @@fonttextsize
+@c @@headings
+@c @@oddfooting    @@oddfootingmarks
+@c @@oddheading    @@oddheadingmarks
+@c @@pagesizes
+@c @@setchapternewpage
 
 Setting such a customization variable to a value @samp{foo} is similar
 to executing @code{@@@var{cmd} foo}.  It is not exactly the same,
@@ -16769,6 +16787,10 @@ though, since any side effects of parsing the Texinfo source are not
 redone.  Also, some variables do not take Texinfo code when generating
 particular formats, but an argument that is already formatted.  This
 is the case, for example, for HTML for @code{documentdescription}.
+
+Note that if @command{texi2any} is invoked to process the file with
+@TeX{} (e.g., with the @option{--pdf} option), then these customization
+variables may not be passed on to @TeX{}.
 
 
 @node Customization Variables and Options
@@ -17141,6 +17163,11 @@ HTML file; default unset.
 For HTML@.  If set, output the program name and miscellaneous related
 information in the page footers; default false.
 
+@item SECTION_NAME_IN_TITLE
+For HTML@.  If set,  when output is split, use the argument of the 
+chapter structuring command (e.g., @code{@@chapter} or @code{@@section})
+in the @code{<title>} instead of the argument to @code{@@node}.
+
 @item SHORTEXTN
 For HTML@.  If set, use @samp{.htm} as extension; default false.
 
@@ -17286,13 +17313,6 @@ Xref Configuration}.
 @item EXTENSION
 The extension added to the output file name.  The default is different
 for each output format.
-
-@item FIX_TEXINFO
-For ``plain Texinfo'' (see the @code{PLAINTEXINFO} item).  If set to
-false, the resulting Texinfo does not have all errors corrected, such
-as missing @samp{@@end}; default true.  This variable is only
-relevant when expanding Texinfo; other converters always try to
-output something sane even if the input is erroneous.
 
 @c @item IDX_SUMMARY
 @c If set, for each @code{@@printindex} a file named
@@ -21528,7 +21548,7 @@ Control System}) and other version control systems, which expand it
 into a string such as:
 
 @example
-$Id: texinfo.texi 7927 2017-08-11 12:08:40Z mthl $
+$Id$
 @end example
 
 (This is potentially useful in all sources that use version control,
