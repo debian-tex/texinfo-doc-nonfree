@@ -6,8 +6,8 @@ Uploaders: Norbert Preining <preining@debian.org>
 Build-Depends: debhelper (>= 9)
 Build-Depends-Indep: texinfo (>= 6.3)
 Standards-Version: 4.1.0
-Vcs-Git: git://anonscm.debian.org/debian-tex/texinfo-doc-nonfree.git
-Vcs-Browser: http://anonscm.debian.org/gitweb/?p=debian-tex/texinfo-doc-nonfree.git
+Vcs-Git: https://github.com/debian-tex/texinfo-doc-nonfree.git
+Vcs-Browser: https://github.com/debian-tex/texinfo-doc-nonfree
 
 Package: texinfo-doc-nonfree
 Architecture: all
