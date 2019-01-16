@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Debian TeX maintainers <debian-tex-maint@lists.debian.org>
 Uploaders: Norbert Preining <preining@debian.org>
 Build-Depends: debhelper (>= 9)
-Build-Depends-Indep: texinfo (>= 6.3)
+Build-Depends-Indep: texinfo (>= 6.5.91)
 Standards-Version: 4.1.0
 Vcs-Git: https://github.com/debian-tex/texinfo-doc-nonfree.git
 Vcs-Browser: https://github.com/debian-tex/texinfo-doc-nonfree
