@@ -1,8 +1,8 @@
-texinfo-doc-nonfree (6.5.91-1~1) unstable; urgency=medium
+texinfo-doc-nonfree (6.5.92-1~1) unstable; urgency=medium
 
-  * New upstream version 6.5.90 & .91
+  * New upstream version 6.5.9{0,1,2}
 
- -- Norbert Preining <preining@debian.org>  Wed, 16 Jan 2019 16:01:43 +0900
+ -- Norbert Preining <norbert@preining.info>  Sun, 03 Feb 2019 19:48:57 +0900
 
 texinfo-doc-nonfree (6.5.0-1) unstable; urgency=medium
 
