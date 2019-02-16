@@ -1,8 +1,8 @@
-texinfo-doc-nonfree (6.5.93-1) experimental; urgency=medium
+texinfo-doc-nonfree (6.6.0-1) experimental; urgency=medium
 
-  * New upstream version 6.5.9{0,1,2,3}
+  * New upstream version 6.{6.0,5.9{0,1,2,3}}
 
- -- Norbert Preining <norbert@preining.info>  Wed, 13 Feb 2019 05:44:10 +0900
+ -- Norbert Preining <norbert@preining.info>  Sun, 17 Feb 2019 08:25:15 +0900
 
 texinfo-doc-nonfree (6.5.0-1) unstable; urgency=medium
 
