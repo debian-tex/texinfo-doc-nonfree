@@ -2,7 +2,8 @@ Source: texinfo-doc-nonfree
 Section: non-free/doc
 Priority: optional
 Maintainer: Debian TeX maintainers <debian-tex-maint@lists.debian.org>
-Uploaders: Norbert Preining <norbert@preining.info>
+Uploaders: Norbert Preining <norbert@preining.info>,
+    Hilmar Preusse <hille42@web.de>
 Build-Depends: debhelper (>= 9)
 Build-Depends-Indep: texinfo (>= 6.6.0)
 Standards-Version: 4.1.0

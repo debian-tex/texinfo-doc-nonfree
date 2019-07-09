@@ -1,3 +1,10 @@
+texinfo-doc-nonfree (6.6.0-2) unstable; urgency=medium
+
+  * Upload to unstable.
+  * Add me to Uploaders.
+
+ -- Hilmar Preusse <hille42@web.de>  Tue, 09 Jul 2019 22:20:16 +0200
+
 texinfo-doc-nonfree (6.6.0-1) experimental; urgency=medium
 
   * New upstream version 6.{6.0,5.9{0,1,2,3}}
