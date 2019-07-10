@@ -6,6 +6,7 @@ Uploaders: Norbert Preining <norbert@preining.info>,
     Hilmar Preusse <hille42@web.de>
 Build-Depends: debhelper (>= 9)
 Build-Depends-Indep: texinfo (>= 6.6.0)
+XS-Autobuild: yes
 Standards-Version: 4.1.0
 Vcs-Git: https://github.com/debian-tex/texinfo-doc-nonfree.git
 Vcs-Browser: https://github.com/debian-tex/texinfo-doc-nonfree

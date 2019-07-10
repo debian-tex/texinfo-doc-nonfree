@@ -2,6 +2,7 @@ texinfo-doc-nonfree (6.6.0-2) unstable; urgency=medium
 
   * Upload to unstable.
   * Add me to Uploaders.
+  * Add "XS-Autobuild: yes" do header of d/control to autobuild.
 
  -- Hilmar Preusse <hille42@web.de>  Tue, 09 Jul 2019 22:20:16 +0200
 
