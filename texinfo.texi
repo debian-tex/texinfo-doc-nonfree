@@ -40,14 +40,9 @@ Foundation, Inc.
 Permission is granted to copy, distribute and/or modify this document
 under the terms of the GNU Free Documentation License, Version 1.3 or
 any later version published by the Free Software Foundation; with no
-Invariant Sections, with the Front-Cover Texts being ``A GNU Manual'',
-and with the Back-Cover Texts as in (a) below.  A copy of the license
-is included in the section entitled ``GNU Free Documentation
-License''.
-
-(a) The FSF's Back-Cover Text is: ``You have the freedom to copy and
-modify this GNU manual.  Buying copies from the FSF supports it in
-developing GNU and promoting software freedom.''
+Invariant Sections, with no Front-Cover Texts, and with no Back-Cover
+Texts.  A copy of the license is included in the section entitled
+``GNU Free Documentation License''.
 @end quotation
 @end copying
 
@@ -114,15 +109,12 @@ Cover art by Etienne Suvasa.
 @contents
 
 
-@ifnottex
 @node Top
 @top Texinfo
 
 This manual is for GNU Texinfo (version @value{VERSION}, @value{UPDATED}),
 a documentation system that can produce both online information and a
 printed manual from a single source using semantic markup.
-
-@end ifnottex
 
 @ifinfo
 The first part of this master menu lists the major nodes in this Info
@@ -403,6 +395,7 @@ Indices
 * Predefined Indices::          Use different indices for different kinds
                                  of entries.
 * Indexing Commands::           How to make an index entry.
+* Advanced Indexing::           Advanced indexing commands.
 * Printing Indices & Menus::    How to print an index in hardcopy and
                                  generate index menus in Info.
 * Combining Indices::           How to combine indices.
@@ -639,7 +632,6 @@ HTML Cross-references
 * 8-bit Expansion:   HTML Xref 8-bit Character Expansion.
 * Mismatch:          HTML Xref Mismatch.
 * Configuration:     HTML Xref Configuration. htmlxref.cnf.
-* Preserving links:  HTML Xref Link Preservation. MANUAL-noderename.cnf.
 
 Sample Texinfo Files
 
@@ -1453,11 +1445,8 @@ regarding nesting of such commands, @pxref{Conditional Nesting}.)
 @cindex Texinfo file minimum
 
 By convention, the name of a Texinfo file ends with one of the 
-extensions @file{.texinfo}, @file{.texi}, @file{.txi}, or 
-@file{.tex}.@footnote{The longer extensions are preferred, since they 
-describe more clearly to a human reader the nature of the file.  The 
-shorter extensions are for operating systems that cannot handle long 
-file names.}
+extensions @file{.texi}, @file{.texinfo}, @file{.txi}, or 
+@file{.tex}.
 
 In order to be made into a printed manual and other output
 formats, a Texinfo file must begin with lines like this:
@@ -1705,7 +1694,7 @@ This chapter expands on the minimal complete Texinfo source file
 previously given (@pxref{Short Sample}).
 
 Certain pieces of information must be provided at the beginning of a
-Texinfo file, such the title of the document and the Top node.  A table
+Texinfo file, such as the title of the document and the Top node.  A table
 of contents is also generally produced here.
 
 @cindex Frontmatter, text in
@@ -2204,8 +2193,6 @@ The @code{@@end titlepage} command starts a new page and turns on page
 numbering (@pxref{Heading Generation}).  All the
 material that you want to appear on unnumbered pages should be put
 between the @code{@@titlepage} and @code{@@end titlepage} commands.
-You can force the table of contents to appear there with the
-@code{@@setcontentsaftertitlepage} command (@pxref{Contents}).
 
 @findex page@r{, within @code{@@titlepage}}
 By using the @code{@@page} command you can force a page break within the
@@ -3455,7 +3442,7 @@ for the Info system as a whole.  (Each directory with Info files is
 intended to contain a file named @file{dir}.)
 
 That's fine for Info, but for HTML output, one might well want the Up
-link from the Top node to go somewhere other than @samp{dir.html}.
+link from the Top node to go to some specific place.
 For example, for GNU the natural place would be
 @url{http://www.gnu.org/manual/} (a web page collecting links to most
 GNU manuals), better specified as just @code{/manual/} if the manual
@@ -3467,7 +3454,8 @@ Customization Variables}), as in
 $ @kbd{makeinfo --html -c TOP_NODE_UP_URL=/manual/} ...
 @end example
 
-All links to @code{(dir)} will be replaced by the given url.
+@c the following line is not true anymore
+@c All links to @code{(dir)} will be replaced by the given url.
 
 @item
 @cindex Prev node of Top node
@@ -3554,7 +3542,7 @@ Section  Section   Section  Section   Section  Section
 @end group
 @end example
 
-Using explicit pointers (not recommended, but for shown for purposes
+Using explicit pointers (not recommended, but shown for purposes
 of the example), the fully-written command to start Chapter@tie{}2
 would be this:
 
@@ -5508,23 +5496,25 @@ refer to printed works for which no Info form exists.
 @section @code{@@url}, @code{@@uref@{@var{url}[, @var{text}][, @var{replacement}]@}}
 
 @anchor{uref}@c old name
-@findex uref
+@anchor{url}
 @cindex Uniform resource locator, referring to
 @cindex URL, referring to
 
+@findex url
 @cindex @code{href}, producing HTML
-@code{@@uref} produces a reference to a uniform resource locator
+@code{@@url} produces a reference to a uniform resource locator
 (url).  It takes one mandatory argument, the url, and two optional
 arguments which control the text that is displayed.  In HTML and PDF
-output, @code{@@uref} produces a link you can follow.  (To merely
+output, @code{@@url} produces a link you can follow.  (To merely
 indicate a url without creating a link people can follow, use
 @code{@@indicateurl}, @pxref{@code{@@indicateurl}}.)
 
-@findex url
-@anchor{url}@code{@@url} is a synonym for @code{@@uref}.
-(Originally, @code{@@url} had the meaning of @code{@@indicateurl}, but
-in practice it was almost always misused.  So we've changed the
-meaning.)
+@findex uref
+@code{@@uref} is a synonym for @code{@@url}.
+(Originally, @code{@@url} had the meaning of @code{@@indicateurl}
+and @code{@@uref} was required to produce a working link, but
+in practice @code{@@url} was almost always misused.  So we've changed 
+the meaning.)
 
 The second argument, if specified, is the text to display (the default
 is the url itself); in Info, DVI, and PDF output, but not in HTML
@@ -5555,25 +5545,25 @@ just one argument.  The given url is both the target and the visible
 text of the link:
 
 @example
-The official GNU ftp site is @@uref@{http://ftp.gnu.org/gnu@}.
+The official GNU ftp site is @@url@{http://ftp.gnu.org/gnu@}.
 @end example
 
 @noindent produces:
 @display
-The official GNU ftp site is @uref{http://ftp.gnu.org/gnu}.
+The official GNU ftp site is @url{http://ftp.gnu.org/gnu}.
 @end display
 
 @subsubheading Two-argument form of @code{@@url}
 
 Here is an example of the two-argument form:
 @example
-The official @@uref@{http://ftp.gnu.org/gnu, GNU ftp site@}
+The official @@url@{http://ftp.gnu.org/gnu, GNU ftp site@}
 holds programs and texts.
 @end example
 
 @noindent which produces:
 @display
-The official @uref{http://ftp.gnu.org/gnu, GNU ftp site}
+The official @url{http://ftp.gnu.org/gnu, GNU ftp site}
 holds programs and texts.
 @end display
 
@@ -5593,12 +5583,12 @@ holds programs and texts.
 
 Finally, an example of the three-argument form:
 @example
-The @@uref@{/man.cgi/1/ls,,ls@} program @dots{}
+The @@url@{/man.cgi/1/ls,,ls@} program @dots{}
 @end example
 
 @noindent which, except for HTML, produces:
 @display
-The @uref{/man.cgi/1/ls,,ls} program @dots{}
+The @url{/man.cgi/1/ls,,ls} program @dots{}
 @end display
 
 @noindent but with HTML:
@@ -8925,7 +8915,7 @@ discussion of each entry.  In a printed manual, this information
 consists of page numbers.  In an Info file, this information is a menu
 entry leading to the first node referenced.
 
-Texinfo provides several predefined kinds of index: an index for
+Texinfo provides several predefined kinds of indices: an index for
 functions, an index for variables, an index for concepts, and so on.
 You can combine indices or use them for other than their canonical
 purpose.  Lastly, you can define your own new indices.
@@ -8934,6 +8924,7 @@ purpose.  Lastly, you can define your own new indices.
 * Predefined Indices::          Use different indices for different kinds
                                  of entries.
 * Indexing Commands::           How to make an index entry.
+* Advanced Indexing::           Advanced indexing commands.
 * Index Entries::               Choose different words for index entries.
 * Printing Indices & Menus::    How to print an index in hardcopy and
                                  generate index menus in Info.
@@ -8952,37 +8943,37 @@ meanings, abbreviations, and the corresponding index entry commands:
 @item cp
 @cindex @code{cp} (concept) index
 @findex cindex
-(@code{@@cindex}) concept index, for general concepts.
+(@code{@@cindex}) Concept index, for general concepts.
 @item fn
 @cindex @code{fn} (function) index
 @findex findex
-(@code{@@findex}) function index, for function and function-like
+(@code{@@findex}) Function index, for function and function-like
 names (such as entry points of libraries).
 @item ky
 @cindex @code{ky} (keystroke) index
 @findex kindex
-(@code{@@kindex}) keystroke index, for keyboard commands.
+(@code{@@kindex}) Keystroke index, for keyboard commands.
 @item pg
 @cindex @code{pg} (program) index
 @findex pindex
-(@code{@@pindex}) program index, for names of programs.
+(@code{@@pindex}) Program index, for names of programs.
 @item tp
 @cindex @code{tp} (data type) index
 @findex tindex
-(@code{@@tindex}) data type index, for type names (such as structures
+(@code{@@tindex}) Data type index, for type names (such as structures
 defined in header files).
 @item vr
 @cindex @code{vr} (variable) index
 @findex vindex
-(@code{@@vindex}) variable index, for variable names (such as global
-variables of libraries).
+(@code{@@vindex}) Variable index, for variable names (such as library global
+variables).
 @end table
 
 @noindent
 Not every manual needs all of these, and most manuals use only two or
 three at most.  The present manual, for example, has two indices: a
-concept index and an @@-command index (that is actually the function
-index but is called a command index in the chapter heading).
+concept index and an @@-command index. (The latter is actually the function
+index but is called a command index in the chapter heading.)
 
 You are not required to use the predefined indices strictly for their
 canonical purposes.  For example, suppose you wish to index some C
@@ -9001,7 +8992,7 @@ Indices}).
 We recommend having a single index in the final document whenever
 possible, however many source indices you use, since then readers have
 only one place to look.  Two or more source indices can be combined
-into one output index using the @code{@@synindex} or
+into one output index by using the @code{@@synindex} or
 @code{@@syncodeindex} commands (@pxref{Combining Indices}).
 
 
@@ -9049,7 +9040,7 @@ Hello, there!
 whatever context) ends up before the material, where readers want to
 be, instead of after.
 
-Try to avoid using a colon in an index entry, as this may confuse some 
+Try to avoid using a colon in index entries, as this may confuse some 
 Info readers.  @xref{Menu Parts} for more information about the
 structure of a menu entry.
 @c At the time of writing, it always works in standalone info, and a
@@ -9067,10 +9058,10 @@ font (@pxref{Fonts}).
 @cindex sort keys for index entries
 @cindex index sorting
 For the printed output, you may specify an explicit sort key for an
-index entry using @code{@@sortas} immediately following the index
-command.  For example: @samp{@@findex @@sortas@{\@} \ @@r@{(literal
-\ in @@code@{@@@@math@})} sorts the index entry this produces under
-backslash.
+index entry using @code{@@sortas} following either the index command
+or the text of the entry.  For example: @samp{@@findex @@sortas@{\@}
+\ @@r@{(literal \ in @@code@{@@@@math@})} sorts the index entry this
+produces under backslash.
 
 @vindex txiindexbackslashignore
 @vindex txiindexhyphenignore
@@ -9086,8 +9077,71 @@ and @samp{@@}, which are ignored by giving as an argument to the
 @code{txiindexatsignignore}.  For example, specifying @samp{@@set
 txiindexbackslashignore} causes the @samp{\mathopsup} entry in the
 index for this manual to be sorted as if it were @samp{mathopsup},
-so that it appears among the other entries beginning `M'.
+so that it appears among the other entries beginning with `M'.
 
+@node Advanced Indexing
+@section Advanced Indexing Commands
+@cindex Indexing, advanced
+@cindex Advanced indexing
+
+Texinfo provides several commands for doing advanced indexing,
+similar to the indices you may see in professionally published books.
+
+@findex @@subentry
+First, you can create @dfn{multilevel} index entries, allowing you
+to group many related subtopics under the same higher level topic.
+You do this by separating the parts of such an entry with the
+@code{@@subentry} command. Such commands might look like this:
+
+@example
+@@cindex Superhumans @@subentry villians
+@@cindex Superhumans @@subentry heros
+@end example
+
+You may have up to three levels in an entry:
+
+@example
+@@cindex coffee makers @@subentry electric @@subentry pink
+@@cindex coffee makers @@subentry electric @@subentry blue
+@end example
+
+You can use the @code{@@sortas} command mentioned earlier with any or
+all of the three parts of an entry to cause them to sort differently
+than they would by default.
+
+@findex @@seeentry
+Second, you may provide an index entry that points to another,
+using the @code{@@seeentry} (``see entry'') command. For example:
+
+@example
+@@cindex Indexes @@seeentry@{Indices@}
+@end example
+
+Such an entry should be unique in your document; the idea is to
+redirect the reader to the other entry where they will find all
+the information they are looking for.
+
+@findex @@seealso
+Finally, you may provide a ``see also'' entry using the @code{@@seealso}
+command. These entries go along with regular entries, and are grouped
+together with them in the final printed index. For example:
+
+@example
+@@cindex Coffee
+@@cindex Coffee @@subentry With milk and sugar
+@@cindex Coffee @@subentry With doughnuts
+@@cindex Coffee @@subentry Decaffeinated
+@@cindex Coffee @@seealso@{Tea@}
+@end example
+
+When using all three of these advanced commands, @emph{do not}
+place a comma betwen the different parts of the index text. The
+@command{texindex} program, which sorts the index entries and
+generates the indexing formatting commands, takes care of placing
+commas in the correct places for you.
+
+These features are most useful with printed documents created
+with @TeX{}, and when translating Texinfo to Docbook.
 
 @node Index Entries
 @section Making Index Entries
@@ -9108,7 +9162,7 @@ This is the case convention we use in most GNU manuals' indices.
 If you don't see how to make an entry terse yet clear, make it longer
 and clear---not terse and confusing.  If many of the entries are
 several words long, the index may look better if you use a different
-convention: to capitalize the first word of each entry.  Whichever
+convention: capitalize the first word of each entry.  Whichever
 case convention you use, use it consistently.
 
 In any event, do not ever capitalize a case-sensitive name such as a C
@@ -9125,6 +9179,8 @@ index entries don't see undifferentiated lists.  Consider this an
 opportunity to make otherwise-identical index entries be more
 specific, so readers can more easily find the exact place they are
 looking for.
+The advanced indexing features described in @ref{Advanced Indexing}
+can help with this, as well.
 
 
 When you are making index entries, it is good practice to think of the
@@ -9133,7 +9189,7 @@ different ways people may look for something.  Different people
 helpful index will have items indexed under all the different words
 that people may use.  For example, one reader may think it obvious
 that the two-letter names for indices should be listed under
-``Indices, two-letter names, since ``Indices'' are the general
+``Indices, two-letter names'', since ``Indices'' are the general
 concept.  But another reader may remember the specific concept of
 two-letter names and search for the entry listed as ``Two letter names
 for indices''.  A good index will have both entries and will help both
@@ -9162,12 +9218,12 @@ process of creating a printed manual, you must run a program called
 sorted index file.  The sorted index file is what is actually used to
 print the index.
 
-Texinfo offers six separate types of predefined index, which suffice
-in most cases.  @xref{Indices}, for information on this, as well
-defining your own new indices, combining indices, and, most
-importantly advice on writing the actual index entries.  This section
-focuses on printing indices, which is done with the
-@code{@@printindex} command.
+Texinfo offers six separate types of predefined index, which suffice in
+most cases. See the other parts of this chapter for information on this,
+as well as advanced indexing commands, defining your own new indices,
+combining indices, and, most importantly, advice on writing the actual
+index entries.  This section focuses on printing indices, which is done
+with the @code{@@printindex} command.
 
 @findex printindex
 @code{@@printindex} takes one argument, a two-letter index
@@ -9268,7 +9324,7 @@ would need to enclose every one of them between the braces of
 
 
 @node @code{@@syncodeindex}
-@subsection @code{@@syncodeindex}: Combining indices using @code{@@code}
+@subsection @code{@@syncodeindex}: Combining Indices Using @code{@@code}
 
 @anchor{syncodeindex}@c old name
 @findex syncodeindex
@@ -9294,17 +9350,17 @@ For this purpose, the indices are given two-letter names:
 
 @table @samp
 @item cp
-concept index
+Concept index
 @item fn
-function index
-@item vr
-variable index
+Function index
 @item ky
-key index
+Key index
 @item pg
-program index
+Program index
 @item tp
-data type index
+Data type index
+@item vr
+Variable index
 @end table
 
 Write a @code{@@syncodeindex} command before or shortly after the
@@ -9317,7 +9373,7 @@ following:
 @end example
 
 @noindent
-This will cause all entries designated for the function index to merge
+This causes all entries designated for the function index to merge
 in with the concept index instead.
 
 To merge both a variables index and a function index into a concept
@@ -9340,7 +9396,7 @@ index into a concept index, all the function names are printed in the
 
 
 @node @code{@@synindex}
-@subsection @code{@@synindex}: Combining indices
+@subsection @code{@@synindex}: Combining Indices
 
 @anchor{synindex}@c old name
 @findex synindex
@@ -9415,17 +9471,17 @@ the predefined indices.  For example:
 @end group
 @end example
 
-The @code{@@defcodeindex} is like the @code{@@defindex} command,
+The @code{@@defcodeindex} command is like the @code{@@defindex} command,
 except that, in the printed output, it prints entries in an
-@code{@@code} font by default instead of a roman font.
+@code{@@code} font by default instead of in a roman font.
 
 You should define new indices before the end-of-header line of a
 Texinfo file, and (of course) before any @code{@@synindex} or
 @code{@@syncodeindex} commands (@pxref{Texinfo File Header}).
 
 As mentioned earlier (@pxref{Predefined Indices}), we recommend having
-a single index in the final document whenever possible, however many
-source indices you use, since then readers have only one place to
+a single index in the final document whenever possible (no matter however many
+source indices you use), since then readers have only one place to
 look.
 
 When creating an index, @TeX{} creates a file whose extension is the
@@ -11102,8 +11158,7 @@ now produces:
 
 The command @code{@@U@{@var{hex}@}} inserts a representation of the
 Unicode character U+@var{hex}.  For example, @code{@@U@{0132@}}
-inserts the Dutch `IJ' ligature (poorly shown here as simply the two
-letters `I' and `J').
+inserts the Dutch `IJ' ligature (`@U{0132}').
 
 The @var{hex} value should be at least four hex digits; leading zeros
 are @emph{not} added.  In general, @var{hex} must specify a valid
@@ -11133,14 +11188,9 @@ entity reference of the form @samp{&#x@var{hex};}, as in
 HTML document uses some other encoding (say, Latin@tie{}1) and the
 given character is not supported in that encoding.
 
-@cindex UTF-8, output from @code{@@U}
-In Info and plain text, if the document encoding is specified
-explicitly to be UTF-8, the output will be the UTF-8 representation of
-the character U+@var{hex} (presuming it's a valid character).  In all
-other cases, the output is the ASCII sequence @samp{U+@var{hex}}, as
-in the six ASCII characters @samp{U+0132} for the example above.
-
-That's all.  No magic!
+In Info and plain text, if the output encoding is not UTF-8, the output 
+is the ASCII sequence @samp{U+@var{hex}}, as in the six ASCII characters 
+@samp{U+0132} for the example above.
 
 
 @node Breaks
@@ -15515,29 +15565,30 @@ For more information, see:
 @cindex @sortas{cshrc init} @file{.cshrc} initialization file
 @cindex Initialization file for @TeX{} input
 
-@TeX{} needs to know where to find the @file{texinfo.tex} file that the
+@TeX{} needs to find the @file{texinfo.tex} file that the
 @samp{\input texinfo} command on the first line reads.  The
 @file{texinfo.tex} file tells @TeX{} how to handle @@-commands; it is
 included in all standard GNU distributions.  The latest version
 released for general use is available
 from the usual GNU servers and mirrors:
 
-@smalldisplay
+@display
 @uref{http://ftp.gnu.org/gnu/texinfo/texinfo.tex}
 @uref{http://ftpmirror.gnu.org/texinfo/texinfo.tex}
-@end smalldisplay
+@end display
 
 The latest development version is available from the Texinfo source
 repository:
-@smalldisplay
-@uref{http://svn.savannah.gnu.org/viewvc/trunk/doc/texinfo.tex?root=texinfo&view=log}
-@end smalldisplay
+
+@display
+@uref{http://git.savannah.gnu.org/cgit/texinfo.git/plain/doc/texinfo.tex}
+@end display
 
 @pindex texinfo.tex@r{, installing}
-@file{texinfo.tex} is essentially a standalone file, and compatibility
-is of utmost concern; so, if you need or want to try a newer version
+@file{texinfo.tex} is essentially a standalone file,
+so, if you need or want to try a newer version
 than came with your system, it nearly always suffices to download it
-and put it anywhere that @TeX{} will find it (first).  You can replace
+and put it anywhere that @TeX{} will find it.  You can replace
 any existing @file{texinfo.tex} with a newer version (of course saving
 the original in case of disaster).
 
@@ -15558,73 +15609,53 @@ to have the European Computer Modern fonts (e.g., @file{ecrm1000}) and
 To use the @code{@@euro} command, you'll need the @samp{feym*} fonts
 (e.g., @file{feymr10}).  @xref{@code{@@euro}}.
 
-All of the above files (and a whole lot more) should be installed by
-default in a reasonable @TeX{} installation.
+All of the above files should be installed by default in a reasonable 
+@TeX{} installation.
 
 @pindex texinfo.cnf @r{installation}
 @cindex Customizing of @TeX{} for Texinfo
 @cindex Site-wide Texinfo configuration file
 Optionally, you may create a file @file{texinfo.cnf} for site configuration.
-This file is read by @TeX{} at the beginning of a Texinfo file.
-You can put any commands you like there, according to local site-wide
-conventions.  They will be read by @TeX{} when processing any Texinfo
-document.  For example, if @file{texinfo.cnf} contains the line
+When processing a Texinfo file, @TeX{} looks for this file
+in its search path, which includes the current directory and standard 
+installation directories.
+You can use this file for local conventions.  For example, if 
+@file{texinfo.cnf} contains the line
 @samp{@@afourpaper} (@pxref{A4 Paper}), then all Texinfo documents
 will be processed with that page size in effect.  If you have nothing
 to put in @file{texinfo.cnf}, you do not need to create it.
 
 @cindex Environment variable @code{TEXINPUTS}
 @vindex TEXINPUTS
-If neither of the above locations for these system files suffice, you
-can specify the directories explicitly.  For @file{texinfo.tex}, you
-can do this by writing the complete path for the file after the
-@code{\input} command.  Another way, that works for both
-@file{texinfo.tex} and @file{texinfo.cnf} (and any other file @TeX{}
-might read), is to set the @code{TEXINPUTS} environment variable in
-your @file{.profile} or @file{.cshrc} file.
-
-Whether you use @file{.profile} or @file{.cshrc} depends on
-whether you use a Bourne shell-compatible (@code{sh}, @code{bash},
-@code{ksh}, @dots{}) or C shell-compatible (@code{csh}, @code{tcsh})
-command interpreter, respeictvely.
-
-In a @file{.profile} file, you could use the following @code{sh} command
-sequence:
+You can set the @code{TEXINPUTS} environment variable
+to allow @TeX{} to find @file{texinfo.cnf}.
+(This also works for @file{texinfo.tex} and any other file @TeX{}
+might read).  For example, if you are using a Bourne shell-compatible shell 
+(@code{sh}, @code{bash}, @code{ksh}, @dots{}), your @file{.profile} file
+could contain the lines:
 
 @example
-@group
 TEXINPUTS=.:/home/me/mylib:
 export TEXINPUTS
-@end group
 @end example
 
-@need 1000
-While in a @file{.cshrc} file, you could use the following @code{csh}
-command sequence:
+@noindent
+These settings would cause @TeX{} first to look for an @file{\input} file
+in the current directory, indicated by the @samp{.}, then in a
+hypothetical user @samp{me}'s @file{mylib} directory, and finally in
+the system directories.  (A leading, trailing, or doubled @samp{:}
+indicates searching the system directories at that point.)
 
-@example
-setenv TEXINPUTS .:/home/me/mylib:
-@end example
-
-On MS-DOS/MS-Windows, you'd do this (note the use of the @samp{;}
+On MS-DOS/MS-Windows, you'd do this like this (note the use of the @samp{;}
 character as directory separator, instead of @samp{:}):
 
 @example
-@group
 set TEXINPUTS=.;d:/home/me/mylib;c:
-@end group
 @end example
 
 @noindent
 It is customary for DOS/Windows users to put such commands in the
 @file{autoexec.bat} file, or in the Windows registry.
-
-@noindent
-These settings would cause @TeX{} to look for @file{\input} file first
-in the current directory, indicated by the @samp{.}, then in a
-hypothetical user @samp{me}'s @file{mylib} directory, and finally in
-the system directories.  (A leading, trailing, or doubled @samp{:}
-indicates searching the system directories at that point.)
 
 
 @node Overfull hboxes
@@ -16734,6 +16765,7 @@ The sections below give the details for each of these.
 * Commands: Customization Variables for @@-Commands.
 * Options:  Customization Variables and Options.
 * HTML:     HTML Customization Variables.
+* latex2html:  @command{latex2html} Customization Variables.
 * Other:    Other Customization Variables.
 @end menu
 
@@ -16837,11 +16869,9 @@ meaning of the options.
 @vindex NODE_FILES
 @option{--node-files}        @tab @code{NODE_FILES}
 @item
-@vindex OUT
 @vindex OUTFILE
 @vindex SUBDIR
-@option{--output}            @tab @code{OUT}, @code{OUTFILE},
-                                        @code{SUBDIR}
+@option{--output}            @tab @code{OUTFILE}, @code{SUBDIR}
 @item
 @vindex paragraphindent
 @option{--paragraph-indent}  @tab @code{paragraphindent}
@@ -16938,15 +16968,15 @@ exec texi2any -c TEXINPUT_OUTPUT_FORMAT=textcontent "$@@"
 
 This table gives the customization variables which apply to HTML
 output only.  A few other customization variable apply to both HTML
-and other output formats; those are given in the next section.
+and other output formats; see @ref{Other Customization Variables}.
 
 @vtable @code
 @item AVOID_MENU_REDUNDANCY
-For HTML@.  If set, and the menu entry and menu description are the
+If set, and the menu entry and menu description are the
 same, then do not print the menu description; default false.
 
 @item AFTER_BODY_OPEN
-For HTML@.  If set, the corresponding text will appear at the
+If set, the corresponding text will appear at the
 beginning of each HTML file; default unset.
 
 @item AFTER_ABOUT
@@ -16955,7 +16985,7 @@ text will appear at the end of the About element; default unset.
 
 @item AFTER_OVERVIEW
 @itemx AFTER_TOC_LINES
-For HTML@.  If set, the corresponding text is output after the short
+If set, the corresponding text is output after the short
 table of contents for @code{AFTER_OVERVIEW} and after the table of
 contents for @code{AFTER_TOC_LINES}; otherwise, a default string is
 used.  At the time of writing, a @code{</div>} element is closed.
@@ -16966,13 +16996,13 @@ In general, you should set @code{BEFORE_OVERVIEW} if
 
 
 @item BASEFILENAME_LENGTH
-For HTML@.  The maximum length of the base filenames; default 245.
+The maximum length of the base filenames; default 245.
 Changing this would make cross-manual references to such long node
 names invalid (@pxref{HTML Xref Link Basics}).
 
 @item BEFORE_OVERVIEW
 @itemx BEFORE_TOC_LINES
-For HTML@.  If set, the corresponding text is output before the short
+If set, the corresponding text is output before the short
 table of contents for @code{BEFORE_OVERVIEW} and before the table of
 contents for @code{BEFORE_TOC_LINES}, otherwise a default string is
 used.  At the time of writing, a @code{<div ...>} element is opened.
@@ -16983,106 +17013,228 @@ In general you should set @code{AFTER_OVERVIEW} if
 
 
 @item BIG_RULE
-For HTML@.  Rule used after and before the top element and before
+Rule used after and before the top element and before
 special elements, but not for footers and headers; default
 @code{<hr>}.
 
 @item BODYTEXT
 @cindex @code{<body>} text, customizing
 @opindex lang@r{, HTML attribute}
-For HTML, the text appearing in @code{<body>}.  By default, sets the
+The text appearing in @code{<body>}.  By default, sets the
 HTML @code{lang} attribute to the document language
 (@pxref{@code{@@documentlanguage}}).
 
 @item CASE_INSENSITIVE_FILENAMES
-For HTML@.  Construct output file names as if the filesystem were case
+Construct output file names as if the filesystem were case
 insensitive (@pxref{HTML Splitting}); default false.
 
 @item CHAPTER_HEADER_LEVEL
-For HTML@.  Header formatting level used for chapter level sectioning
+Header formatting level used for chapter level sectioning
 commands; default @samp{2}.
 
 @item CHECK_HTMLXREF
-For HTML@.  Check that manuals which are the target of external
+Check that manuals which are the target of external
 cross-references (@pxref{Four and Five Arguments}) are present in
 @file{htmlxref.cnf} (@pxref{HTML Xref Configuration}); default false.
 
 @item COMPLEX_FORMAT_IN_TABLE
-For HTML@.  If set, use tables for indentation of complex formats; default
+If set, use tables for indentation of complex formats; default
 false.
 
 @item CSS_LINES
-For HTML@.  CSS output, automatically determined by default (@pxref{HTML CSS}).
+CSS output, automatically determined by default (@pxref{HTML CSS}).
 
 @item DATE_IN_HEADER
-For HTML@.  Put the document generation date in the header; off by default.
+Put the document generation date in the header; off by default.
 
 @item DEF_TABLE
-For HTML@.  If set, a @code{<table>} construction for @code{@@deffn}
+If set, a @code{<table>} construction for @code{@@deffn}
 and similar @@-commands is used (looking more like the @TeX{} output),
 instead of definition lists; default false.
 
 @item DEFAULT_RULE
-For HTML@.  Rule used between element, except before and after the
+Rule used between element, except before and after the
 top element, and before special elements, and for footers and headers;
 default @code{<hr>}.
 
 @item DO_ABOUT
-For HTML@.  If set to 0 never do an About special element;
+If set to 0 never do an About special element;
 if set to 1 always do an About special element;
 default 0.
 @c @xref{Output Elements Defined}.
 
 @item EXTERNAL_DIR
-For HTML@.  Base directory for external manuals; default none.  It is
+Base directory for external manuals; default none.  It is
 better to use the general external cross-reference mechanism
 (@pxref{HTML Xref Configuration}) than this variable.
 
 @item EXTRA_HEAD
-For HTML@.  Additional text appearing within @code{<head>}; default unset.
+Additional text appearing within @code{<head>}; default unset.
 
 @item FOOTNOTE_END_HEADER_LEVEL
-For HTML@.  Header formatting level used for the footnotes header with
+Header formatting level used for the footnotes header with
 the `end' footnotestyle; default @samp{4}.  @xref{Footnote Styles}.
 
 @item FOOTNOTE_SEPARATE_HEADER_LEVEL
-For HTML@.  Header formatting level used for the footnotes header with
+Header formatting level used for the footnotes header with
 the `separate' footnotestyle; default @samp{4}.  @xref{Footnote
 Styles}.
 
 @item FRAMES
-For HTML@.  If set, a file describing the frame layout is generated,
+If set, a file describing the frame layout is generated,
 together with a file with the short table of contents; default false.
 
 @item FRAMESET_DOCTYPE
-For HTML@.  Same as DOCTYPE, but for the file containing the frame
+Same as DOCTYPE, but for the file containing the frame
 description.
 
 @item HEADER_IN_TABLE
-For HTML@.  Use tables for header formatting rather than a simple
+Use tables for header formatting rather than a simple
 @code{<div>} element; default false.
 
 @item ICONS
-For HTML@.  Use icons for the navigation panel; default false.
+Use icons for the navigation panel; default false.
 
 @item IMAGE_LINK_PREFIX
-For HTML@.  If set, the associated value is prepended to the image file
+If set, the associated value is prepended to the image file
 links; default unset.
 
 @item INLINE_CONTENTS
-For HTML@.  If set, output the contents where the @code{@@contents} and
+If set, output the contents where the @code{@@contents} and
 similar @@-commands are located; default true.  This is ignored if
 @code{@@set*contentsaftertitlepage} is set (@pxref{Contents}).
 
 @item INLINE_CSS_STYLE
-For HTML@.  Put CSS directly in HTML elements rather than at the
+Put CSS directly in HTML elements rather than at the
 beginning of the output; default false.
 
 @item KEEP_TOP_EXTERNAL_REF
-For HTML@.  If set, do not ignore @samp{Top} as the first
+If set, do not ignore @samp{Top} as the first
 argument for an external ref to a manual, as is done by default.
 @xref{Referring to a Manual as a Whole}.
 
+@item MAX_HEADER_LEVEL
+Maximum header formatting level used (higher header
+formatting level numbers correspond to lower sectioning levels);
+default @samp{4}.
+
+@item MENU_SYMBOL
+Symbol used in front of menu entries when node names are used
+for menu entries formatting; default @samp{&bull;}.
+
+@item MONOLITHIC
+Output only one file including the table of contents.  Set
+by default, but only relevant when the output is not split.
+
+@item NO_CSS
+Do not use CSS; default false.  @xref{HTML CSS}.
+
+@item PRE_ABOUT
+Used when an About element is output.  If set to a text string,
+this text will appear at the beginning of the About element.  If set
+to a reference on a subroutine, the result of the subroutine call will
+appear at the beginning of the About element.  If not set (the
+default), default text is used.
+
+@item PRE_BODY_CLOSE
+If set, the given text will appear at the footer of each
+HTML file; default unset.
+
+@item PROGRAM_NAME_IN_FOOTER
+If set, output the program name and miscellaneous related
+information in the page footers; default false.
+
+@item SECTION_NAME_IN_TITLE
+If set,  when output is split, use the argument of the chapter 
+structuring command (e.g., @code{@@chapter} or @code{@@section})
+in the @code{<title>} instead of the argument to @code{@@node}.
+
+@item SHOW_TITLE
+If set, output the title at the beginning of the document;
+default true.
+
+@item SIMPLE_MENU
+If set, use a simple preformatted style for the menu,
+instead of breaking down the different parts of the menu; default false.
+@xref{Menu Parts}.
+
+@item TOC_LINKS
+If set, links from headings to toc entries are created;
+default false.
+
+@item TOP_FILE
+This file name may be used for the top-level file.  The extension is
+set appropriately, if necessary.  This is used to override the default,
+and is, in general, only taken into account when output is split, and
+for HTML@.
+
+@item TOP_NODE_FILE_TARGET
+File name used for the Top node in cross-references;
+default is @code{index.html}.
+
+@item TOP_NODE_UP_URL
+A url used for Top node up references; the default is
+@code{undef}, in that case no Top node Up reference is generated.
+For more about the Top node pointers, @pxref{First Node}.  For 
+overriding the Up pointer name in cas @code{TOP_NODE_UP_URL} is set
+and for other formats, see @code{TOP_NODE_UP} in 
+@ref{Other Customization Variables}.
+
+@item USE_ACCESSKEY
+@cindex @code{accesskey}, customization variable for
+Use @code{accesskey} in cross-references; default true.
+
+@item USE_ISO
+Use entities for doubled single-quote characters
+(@pxref{Inserting Quotation Marks}), and @samp{---} and @samp{--}
+(@pxref{Conventions}); default true.
+
+@item USE_LINKS
+@cindex @code{<link>} HTML tag, in @code{<head>}
+@cindex @code{<head>} HTML tag, and @code{<link>}
+Generate @code{<link>} elements in the HTML @code{<head>}
+output; default true.
+
+@item USE_REL_REV
+Use @code{rel} in cross-references; default true.
+
+@item VERTICAL_HEAD_NAVIGATION
+If set, a vertical navigation panel is used; default false.
+
+@item WORDS_IN_PAGE
+@cindex Navigation panel, bottom of page
+@cindex Navigation footer
+When output is split by nodes, specifies the approximate
+minimum page length at which a navigation panel is placed at the
+bottom of a page.  To avoid ever having the navigation buttons at the
+bottom of a page, set this to a sufficiently large number.  The
+default is 300.
+
+@item XREF_USE_FLOAT_LABEL
+If set, for the float name in cross-references, use the
+float label instead of the type followed by the float number
+(@pxref{@code{@@float}}).  The default is off.
+
+@item XREF_USE_NODE_NAME_ARG
+Only relevant for cross-reference commands with no cross
+reference name (second argument).  If set to@tie{}1, use the node name
+(first) argument in cross-reference @@-commands for the text displayed
+as the hyperlink.  If set to@tie{}0, use the node name if
+@code{USE_NODES} is set, otherwise the section name.  If set to
+@samp{undef}, use the first argument in preformatted environments,
+otherwise use the node name or section name depending on
+@code{USE_NODES}.  The default is @samp{undef}.
+
+@end vtable
+
+
+@node @command{latex2html} Customization Variables
+@subsection @command{latex2html} Customization Variables
+
+This table lists the customization variables which can be used when 
+@command{latex2html} is being used.
+
+@vtable @code
 @item L2H
 For HTML@.  If set, @command{latex2html} is used to convert @code{@@math}
 and @code{@@tex} sections; default false.  Best used with @option{--iftex}.
@@ -17119,131 +17271,8 @@ name may start with @samp{.}; otherwise, @command{latex2html} will
 fail (because of @command{dvips}).  The default is the empty string,
 which means the current directory.
 
-@item MAX_HEADER_LEVEL
-For HTML@.  Maximum header formatting level used (higher header
-formatting level numbers correspond to lower sectioning levels);
-default @samp{4}.
-
-@item MENU_SYMBOL
-For HTML@.  Symbol used in front of menu entries when node names are used
-for menu entries formatting; default @samp{&bull;}.
-
-@item MONOLITHIC
-For HTML@.  Output only one file including the table of contents.  Set
-by default, but only relevant when the output is not split.
-
-@item NO_CSS
-For HTML@.  Do not use CSS; default false.  @xref{HTML CSS}.
-
-@item NODE_FILE_EXTENSION
-For HTML@.  Extension for node files if @code{NODE_FILENAMES} is set;
-default @samp{html}.
-
-@item PRE_ABOUT
-For HTML, when an About element is output.  If set to a text string,
-this text will appear at the beginning of the About element.  If set
-to a reference on a subroutine, the result of the subroutine call will
-appear at the beginning of the About element.  If not set (the
-default), default text is used.
-
-@item PRE_BODY_CLOSE
-For HTML@.  If set, the given text will appear at the footer of each
-HTML file; default unset.
-
-@item PROGRAM_NAME_IN_FOOTER
-For HTML@.  If set, output the program name and miscellaneous related
-information in the page footers; default false.
-
-@item SECTION_NAME_IN_TITLE
-For HTML@.  If set,  when output is split, use the argument of the 
-chapter structuring command (e.g., @code{@@chapter} or @code{@@section})
-in the @code{<title>} instead of the argument to @code{@@node}.
-
-@item SHORTEXTN
-For HTML@.  If set, use @samp{.htm} as extension; default false.
-
-@item SHOW_TITLE
-For HTML@.  If set, output the title at the beginning of the document;
-default true.
-
-@item SIMPLE_MENU
-For HTML@.  If set, use a simple preformatted style for the menu,
-instead of breaking down the different parts of the menu; default false.
-@xref{Menu Parts}.
-
-@item TOC_LINKS
-For HTML@.  If set, links from headings to toc entries are created;
-default false.
-
-@item TOP_FILE
-This file name may be used for the top-level file.  The extension is
-set appropriately, if necessary.  This is used to override the default,
-and is, in general, only taken into account when output is split, and
-for HTML@.
-
-@item TOP_NODE_FILE
-For HTML@.  File name used for the Top node, if @code{NODE_FILENAMES}
-is set; default is @code{index}.
-
-@item TOP_NODE_FILE_TARGET
-For HTML@.  File name used for the Top node in cross-references;
-default is @code{index}.
-
-@item TOP_NODE_UP_URL
-For HTML@.  A url used for @code{(dir)} references; the default is
-@code{undef}, meaning that the normal rules apply, typically leading
-to a link to @samp{dir.html} from an implicit or explicit reference to
-@samp{(dir)} (@pxref{HTML Xref}).  For more about the Top node
-pointers, @pxref{First Node}.  For overriding the Up pointer in other
-formats, see @code{TOP_NODE_UP} in @ref{Other Customization
-Variables}.
-
-@item USE_ACCESSKEY
-@cindex @code{accesskey}, customization variable for
-For HTML@.  Use @code{accesskey} in cross-references; default true.
-
-@item USE_ISO
-For HTML@.  Use entities for doubled single-quote characters
-(@pxref{Inserting Quotation Marks}), and @samp{---} and @samp{--}
-(@pxref{Conventions}); default true.
-
-@item USE_LINKS
-@cindex @code{<link>} HTML tag, in @code{<head>}
-@cindex @code{<head>} HTML tag, and @code{<link>}
-For HTML@.  Generate @code{<link>} elements in the HTML @code{<head>}
-output; default true.
-
-@item USE_REL_REV
-For HTML@.  Use @code{rel} in cross-references; default true.
-
-@item VERTICAL_HEAD_NAVIGATION
-For HTML@.  If set, a vertical navigation panel is used; default false.
-
-@item WORDS_IN_PAGE
-@cindex Navigation panel, bottom of page
-@cindex Navigation footer
-For HTML, with output split at nodes.  Specifies the approximate
-minimum page length at which a navigation panel is placed at the
-bottom of a page.  To avoid ever having the navigation buttons at the
-bottom of a page, set this to a sufficiently large number.  The
-default is 300.
-
-@item XREF_USE_FLOAT_LABEL
-For HTML@.  If set, for the float name in cross-references, use the
-float label instead of the type followed by the float number
-(@pxref{@code{@@float}}).  The default is off.
-
-@item XREF_USE_NODE_NAME_ARG
-For HTML@.  Only relevant for cross-reference commands with no cross
-reference name (second argument).  If set to@tie{}1, use the node name
-(first) argument in cross-reference @@-commands for the text displayed
-as the hyperlink.  If set to@tie{}0, use the node name if
-@code{USE_NODES} is set, otherwise the section name.  If set to
-@samp{undef}, use the first argument in preformatted environments,
-otherwise use the node name or section name depending on
-@code{USE_NODES}.  The default is @samp{undef}.
-
 @end vtable
+
 
 
 @node Other Customization Variables
@@ -17346,17 +17375,6 @@ default true.  Do not warn about index entries, since parsing problems
 there don't prevent navigation; readers can still relatively easily
 find their way to the node in question.
 
-@item INPUT_ENCODING_NAME
-Normalized encoding name suitable for output.  Should be a usable
-charset name in HTML, typically one of the preferred IANA encoding
-names.  You should not need to use this variable, since it is set by
-@code{@@documentencoding} (@pxref{@code{@@documentencoding}}).
-
-@item INPUT_PERL_ENCODING
-Perl encoding used to process the Texinfo source.  You should not need
-to use that variable, since it is set by @code{@@documentencoding}
-(@pxref{@code{@@documentencoding}}).
-
 @item MAX_MACRO_CALL_NESTING
 The maximal number of recursive calls of @@-commands defined through
 @code{@@rmacro}; default 100000.  The purpose of this variable is to
@@ -17370,11 +17388,6 @@ empty.
 If set, do not use @code{@@setfilename} to set the document name;
 instead, base the output document name only on the input file name.
 The default is false.
-
-@item NODE_FILENAMES
-If set, node names are used to construct file names.  By default, it
-is set if the output is split by node, or if @code{NODE_FILES} is set
-and the output is split in any way.
 
 @item NODE_NAME_IN_INDEX
 If set, use node names in index entries, otherwise prefer section names;
@@ -17398,12 +17411,11 @@ output uses a Unicode left quote.
 Normalized encoding name used for output files.  Should be a usable
 charset name in HTML, typically one of the preferred IANA encoding
 names.  By default, if an input encoding is set (typically through
-@code{@@documentencoding} or @code{INPUT_ENCODING_NAME}), this
-information is used to set the output encoding name.  If no input
-encoding is specified, the default output encoding name may be set by
-the output format.  In particular, the XML-based formats use
-@code{utf-8} for @code{OUTPUT_ENCODING_NAME} if the encoding is not
-otherwise specified.  @xref{@code{@@documentencoding}}.
+@code{@@documentencoding}), this information is used to set the output 
+encoding name.  If no input encoding is specified, the default output 
+encoding name may be set by the output format.  In particular, the 
+XML-based formats use @code{utf-8} for @code{OUTPUT_ENCODING_NAME} if 
+the encoding is not otherwise specified.  @xref{@code{@@documentencoding}}.
 
 @item OVERVIEW_LINK_TO_TOC
 If set, the cross-references in the Overview link to the corresponding
@@ -17424,21 +17436,11 @@ The output file prefix, which is prepended to some output file names.
 By default it is set by @code{@@setfilename} or from the input file
 (@pxref{@code{@@setfilename}}).  How this value is used depends on the
 value of other customization variables or command line options, such
-as whether the output is split and @code{NODE_FILENAMES}.  The default
-is unset.
+as whether the output is split.  The default is unset.
 
 @item PROGRAM
 Name of the program used.  By default, it is set to the name of the
 program launched, with a trailing @samp{.pl} removed.
-
-@item RENAMED_NODES_FILE
-If set, use the value for the renamed nodes description file.  If not
-set, the file is @file{@var{doc_basename}-noderename.cnf}.
-@xref{HTML Xref Link Preservation}.
-
-@item RENAMED_NODES_REDIRECTIONS
-If set, create redirection files for renamed nodes.  Set by default
-when generating HTML@.
 
 @item SHOW_MENU
 @vindex HEADERS
@@ -17492,9 +17494,11 @@ For stripped text content output (i.e., when
 also output comments.  Default false.
 
 @item TOP_NODE_UP
-Up node for the Top node; default @samp{(dir)}.  For overriding the
-url in HTML output, see @code{TOP_NODE_UP_URL} in @ref{HTML
-Customization Variables}.
+Up node for the Top node; default @samp{(dir)}.  This node name is 
+supposed to be already formatted for the output format.  In HTML
+can be used in attribute, so should not contain any element.  Used for
+HTML output only if @code{TOP_NODE_UP_URL} is set to override the url, 
+see @code{TOP_NODE_UP_URL} in @ref{HTML Customization Variables}.  
 
 @item TREE_TRANSFORMATIONS
 The associated value is a comma separated list of transformations that
@@ -19004,7 +19008,6 @@ The algorithm was primarily devised by Patrice Dumas in 2003--04.
 * 8-bit Expansion:   HTML Xref 8-bit Character Expansion.
 * Mismatch:          HTML Xref Mismatch.
 * Configuration:     HTML Xref Configuration. htmlxref.cnf.
-* Preserving links:  HTML Xref Link Preservation. MANUAL-noderename.cnf.
 @end menu
 
 
@@ -19486,67 +19489,6 @@ If you have additions or corrections to the @file{htmlxref.cnf}
 distributed with Texinfo, please email @email{bug-texinfo@@gnu.org} as
 usual.  You can get the latest version from
 @url{http://ftpmirror.gnu.org/@/texinfo/@/htmlxref.cnf}.
-
-
-@node HTML Xref Link Preservation
-@subsection HTML Cross-reference Link Preservation: @var{manual}@file{-noderename.cnf}
-
-@pindex noderename.cnf
-@pindex @var{manual}-noderename.cnf
-@cindex HTML cross-reference link preservation
-@cindex Preserving HTML links to old nodes
-@cindex Old nodes, preserving links to
-@cindex Renaming nodes, and preserving links
-@cindex Links, preserving to renamed nodes
-@cindex Node renaming, and preserving links
-
-Occasionally changes in a program require removing (or renaming) nodes
-in the manual in order to have the best documentation.  Given the
-nature of the web, however, links may exist anywhere to such a removed
-node (renaming appears the same as removal for this purpose), and it's
-not ideal for those links to simply break.
-
-The preferred approach to preserving links to deleted or renamed nodes 
-is to use anchors (@pxref{@code{@@anchor}}), as this works with all 
-output formats, including Info.
-However, Texinfo provides an alternative method to do this for HTML 
-output via a separate file which specifes old
-node names and the new nodes to which the old names should be
-redirected.
-This method is deprecated, and support for these files will be removed 
-in future Texinfo releases. It is specific to HTML and supporting 
-@@-commands in node names in these files in practice complicates the 
-implementation in @command{texi2any}.
-
-@vindex RENAMED_NODES_FILE
-The @dfn{renamed nodes file} is named 
-@var{manual}@file{-noderename.cnf}, where
-@var{manual} is the base name of the manual.
-For example, the manual
-@file{texinfo.texi} would be supplemented by a file
-@file{texinfo-noderename}.cnf.  (This name can be overridden by
-setting the @file{RENAMED_NODES_FILE} customization variable;
-@pxref{Customization Variables}).
-
-The file is read in pairs of lines, as follows:
-
-@example
-@var{old-node-name}
-@@@@@{@} @var{new-node-name}
-@end example
-
-The usual conversion from Texinfo node names to HTML names is applied;
-see this entire section for details (@pxref{HTML Xref}).  The unusual
-@samp{@@@@@{@}} separator is used because it is not a valid Texinfo
-construct, so can't appear in the node names.
-
-The effect is that @command{makeinfo} generates a redirect from
-@var{old-node-name} to @var{new-node-name} when producing HTML output.
-Thus, external links to the old node are preserved.
-
-Lines consisting only of whitespace are ignored.  Comments are
-indicated with a @samp{@@c} at the beginning of a line, optionally
-preceded by whitespace.
 
 
 @node @@-Command Details
@@ -21572,14 +21514,15 @@ plain text output, where it's not clear what should be done.
 @item
 @pindex automake@r{, and version info}
 @vindex UPDATED @r{Automake variable}
+@vindex UPDATED-MONTH @r{Automake variable}
 @vindex VERSION @r{Automake variable}
 @pindex time-stamp.el
 The @file{version.texi} in the @code{@@include} command is maintained
-automatically by Automake (@pxref{Top,,, automake, GNU Automake}).  It
-sets the @samp{VERSION} and @samp{UPDATED} values used elsewhere.  If
-your distribution doesn't use Automake, but you do use Emacs, you may
-find the time-stamp.el package helpful (@pxref{Time Stamps,,, emacs,
-The GNU Emacs Manual}).
+automatically by Automake (@pxref{Texinfo,,, automake, GNU Automake}).
+It sets the @samp{VERSION}, @samp{UPDATED} and @samp{UPDATED-MONTH} 
+values used elsewhere.  If your distribution doesn't use Automake, but
+you do use Emacs, you may find the time-stamp.el package helpful
+(@pxref{Time Stamps,,, emacs, The GNU Emacs Manual}).
 
 @item
 The @code{@@syncodeindex} command reflects the recommendation to use
