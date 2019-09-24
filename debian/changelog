@@ -1,3 +1,9 @@
+texinfo-doc-nonfree (6.7.0-1) unstable; urgency=medium
+
+  * New upstream version 6.7.0
+
+ -- Norbert Preining <norbert@preining.info>  Tue, 24 Sep 2019 09:00:36 +0900
+
 texinfo-doc-nonfree (6.6.0-2) unstable; urgency=medium
 
   * Upload to unstable.
